@@ -3,6 +3,7 @@ function [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue(filename,class_nu
 load(filename)
 bin_width = 0.05;  % 50 milliseconds bin
 bin_edges=-0.8:bin_width:2.5;
+
 bins = bin_edges+0.5*bin_width;
 
 allTS = [];
@@ -11,6 +12,7 @@ m_counter = 0;
 if ~isempty(MatData) && class_num <= length(MatData.class)
     for m1 = 1:length(MatData.class(class_num).ntr)
 %         if ~isempty(MatData.class(class_num).ntr(m1).Saccade_onT)
+
             try
                 TS=[];
                 TS = MatData.class(class_num).ntr(m1).TS-MatData.class(class_num).ntr(m1).Cue_onT;
@@ -19,6 +21,7 @@ if ~isempty(MatData) && class_num <= length(MatData.class)
             catch
             end
 %         end
+
     end
     if class_num + 8 <= length(MatData.class)
         for m2 = 1:length(MatData.class(class_num + 8).ntr)

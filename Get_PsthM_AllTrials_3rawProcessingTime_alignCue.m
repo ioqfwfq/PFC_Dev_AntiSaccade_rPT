@@ -1,6 +1,7 @@
 function [psth_temp1, psth_temp2, psth_temp3, ntrs_temp] = Get_PsthM_AllTrials_3rawProcessingTime_alignCue(filename,class_num)
 % 12-Nov-2019, J Zhu
 % 3 group of rPT, according to the behavioral data
+
 load(filename)
 bin_width = 0.05;  % 50 milliseconds bin
 bin_edges=-.8:bin_width:1.5;

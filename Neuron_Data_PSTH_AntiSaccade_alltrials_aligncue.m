@@ -5,6 +5,7 @@
 
 clear all
 [Neurons_num Neurons_txt] = xlsread('Neurons.xlsx','SigNeuronWM');
+
 warning off MATLAB:divideByZero
 Neurons = [Neurons_txt(:,1) num2cell(Neurons_num(:,1))];
 
@@ -54,6 +55,7 @@ axis([-0.5 1.5 0 definepsthmax+0.2])
 xlim([-0.5 0.5])
 xlabel('Time s')
 ylabel('Firing Rate spikes/s')
+
 gtext({[num2str(nn) ' neurons ' num2str(ntrs) ' trials']},'color','c', 'FontWeight', 'Bold')
 
 
