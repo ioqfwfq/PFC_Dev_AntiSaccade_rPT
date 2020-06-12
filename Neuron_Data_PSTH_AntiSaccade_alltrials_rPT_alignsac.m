@@ -6,7 +6,7 @@
 % in same figure. 09-Sep-2019, J Zhu
 
 clear all
-[Neurons_num Neurons_txt] = xlsread('testMN.xlsx','all');
+[Neurons_num Neurons_txt] = xlsread('inuse.xlsx','youngPFC');
 warning off MATLAB:divideByZero
 Neurons = [Neurons_txt(:,1) num2cell(Neurons_num(:,1))];
 
@@ -44,10 +44,10 @@ nn=sum(ntrs~=0);
 ntrs=sum(ntrs);
 definepsthmax=50;
 
-% fig=openfig('figure2');
-figure
-set( gcf, 'Color', 'White', 'Unit', 'Normalized', ...
-    'Position', [0.1,0.1,0.8,0.8] ) ;
+fig=openfig('figure2');
+% figure
+% set( gcf, 'Color', 'White', 'Unit', 'Normalized', ...
+%     'Position', [0.1,0.1,0.8,0.8] ) ;
 subplot(2,2,1)
 bin_width = 0.05;  % 50 milliseconds bin
 bin_edges=-.8:bin_width:1.5;
@@ -59,20 +59,20 @@ try
 catch
 end
 try
-    plot(bins,psth1mean,'r','LineWidth',3);
+    plot(bins,psth1mean,'b','LineWidth',3);
 catch
 end
-try
-    plot(bins,psth2mean,'b','LineWidth',3);
-catch
-end
+% try
+%     plot(bins,psth2mean,'b','LineWidth',3);
+% catch
+% end
 line([0 0], [0 50],'color','k')
 axis([-0.5 1.5 0 definepsthmax+0.2])
 xlim([-0.5 0.5])
 xlabel('Time s')
 ylabel('Firing Rate spikes/s')
 title('0-0.075s')
-gtext({[num2str(nn(1)) ' neurons ' num2str(ntrs(1)) ' trials']},'color','k', 'FontWeight', 'Bold')
+gtext({[num2str(nn(1)) ' neurons ' num2str(ntrs(1)) ' trials']},'color','b', 'FontWeight', 'Bold')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 subplot(2,2,2)
@@ -87,20 +87,20 @@ try
 catch
 end
 try
-    plot(bins,psth3mean,'r','LineWidth',3);
+    plot(bins,psth3mean,'b','LineWidth',3);
 catch
 end
-try
-    plot(bins,psth4mean,'b','LineWidth',3);
-catch
-end
+% try
+%     plot(bins,psth4mean,'b','LineWidth',3);
+% catch
+% end
 line([0 0], [0 50],'color','k')
 axis([-0.5 1.5 0 definepsthmax+0.2])
 xlim([-0.5 0.5])
 xlabel('Time s')
 ylabel('Firing Rate spikes/s')
 title('0.075-0.120s')
-gtext({[num2str(nn(2)) ' neurons ' num2str(ntrs(2)) ' trials']},'color','k', 'FontWeight', 'Bold')
+gtext({[num2str(nn(2)) ' neurons ' num2str(ntrs(2)) ' trials']},'color','b', 'FontWeight', 'Bold')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 subplot(2,2,3)
@@ -115,20 +115,20 @@ try
 catch
 end
 try
-    plot(bins,psth5mean,'r','LineWidth',3);
+    plot(bins,psth5mean,'b','LineWidth',3);
 catch
 end
-try
-    plot(bins,psth6mean,'b','LineWidth',3);
-catch
-end
+% try
+%     plot(bins,psth6mean,'b','LineWidth',3);
+% catch
+% end
 line([0 0], [0 50],'color','k')
 axis([-0.5 1.5 0 definepsthmax+0.2])
 xlim([-0.5 0.5])
 xlabel('Time s')
 ylabel('Firing Rate spikes/s')
 title('0.120-0.150s')
-gtext({[num2str(nn(3)) ' neurons ' num2str(ntrs(3)) ' trials']},'color','k', 'FontWeight', 'Bold')
+gtext({[num2str(nn(3)) ' neurons ' num2str(ntrs(3)) ' trials']},'color','b', 'FontWeight', 'Bold')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 subplot(2,2,4)
@@ -143,24 +143,24 @@ try
 catch
 end
 try
-    plot(bins,psth7mean,'r','LineWidth',3);
+    plot(bins,psth7mean,'b','LineWidth',3);
 catch
 end
-try
-    plot(bins,psth8mean,'b','LineWidth',3);
-catch
-end
+% try
+%     plot(bins,psth8mean,'b','LineWidth',3);
+% catch
+% end
 line([0 0], [0 50],'color','k')
 axis([-0.5 1.5 0 definepsthmax+0.2])
 xlim([-0.5 0.5])
 xlabel('Time s')
 ylabel('Firing Rate spikes/s')
 title('>0.150s')
-gtext({[num2str(nn(4)) ' neurons ' num2str(ntrs(4)) ' trials']},'color','k', 'FontWeight', 'Bold')
+gtext({[num2str(nn(4)) ' neurons ' num2str(ntrs(4)) ' trials']},'color','b', 'FontWeight', 'Bold')
 
 axes( 'Position', [0, 0.95, 1, 0.05] ) ;
 set( gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None' ) ;
-text( 0.5, 0, 'PPC neurons Align Sac Best saccade location/opposite location', 'FontSize', 12', 'FontWeight', 'Bold', ...
+text( 0.5, 0, 'PFC neurons Align Sac Best saccade location', 'FontSize', 12', 'FontWeight', 'Bold', ...
     'HorizontalAlignment', 'Center', 'VerticalAlignment', 'middle' )
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
