@@ -4,7 +4,6 @@
 % 09-Oct-2019, J Zhu
 
 clear all
-
 [Neurons_num Neurons_txt] = xlsread('Neurons.xlsx','SigNeuronWM');
 warning off MATLAB:divideByZero
 Neurons = [Neurons_txt(:,1) num2cell(Neurons_num(:,1))];
@@ -20,7 +19,6 @@ end
 % for n = 1:length(Best_target)
 %     Opp_target(n) = opp_index(Best_target(n));
 % end
-
 
 for n = 1:length(Neurons)
     %     Antifilename = [Neurons{n,1}(1:6),'_2_',num2str(Neurons{n,2})];
@@ -80,6 +78,7 @@ ylim([0 20])
 ylabel('Firing Rate spikes/s')
 gtext({[num2str(nn) ' neurons ' num2str(ntrs) ' trials']},'color','k', 'FontWeight', 'Bold')
 
+
 axes( 'Position', [0, 0.95, 1, 0.05] ) ;
 set( gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None' ) ;
 text( 0.5, 0, 'PFC neurons Align Cue Best Delay location', 'FontSize', 12', 'FontWeight', 'Bold', ...
@@ -112,7 +111,6 @@ max_result(1:length(Neurons),1:3) = NaN;
 for n = 1:length(Neurons)
     Profilename = [Neurons{n,1}([1:6]),'_1_',num2str(Neurons{n,2})];
     Antifilename = [Neurons{n,1}([1:6]),'_2_',num2str(Neurons{n,2})];
-
     temp = Neuron_Data_Maxsacrate_ProFrom8LOC(Profilename,Antifilename);
     max_results(n,1:length(temp)) = temp(1);
 end

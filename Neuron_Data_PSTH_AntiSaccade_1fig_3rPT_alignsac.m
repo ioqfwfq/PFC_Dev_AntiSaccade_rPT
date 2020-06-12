@@ -1,8 +1,6 @@
-function Neuron_Data_PSTH_AntiSaccade_sameneuron_rPT_alignsac
 % For AntiSaccade task
 % Plot result from all trials pooled together (4 groups of rPT, 1 condition for each group)
-% Aligned on cue on. J Zhu.
-% 4-Feb-2020, smoothen the curve using sliding windows
+% Aligned on saccade. J Zhu.
 
 clear all
 [Neurons_num Neurons_txt] = xlsread('database.xlsx','allPFC');
@@ -22,79 +20,61 @@ end
 
 for n = 1:length(Neurons)
     Antifilename = [Neurons{n,1}(1:6),'_2_',num2str(Neurons{n,2})];
-%     Profilename = [Neurons{n,1}(1:6),'_1_',num2str(Neurons{n,2})];
-%     Errfilename = [Neurons{n,1}(1:6),'_2_',num2str(Neurons{n,2}),'_erriscuesac'];
+    Profilename = [Neurons{n,1}(1:6),'_1_',num2str(Neurons{n,2})];
+    Errfilename = [Neurons{n,1}(1:6),'_2_',num2str(Neurons{n,2}),'_erriscuesac'];
     try
-        [psth_temp1, psth_temp2, psth_temp3, psth_temp4, ntrs_temp] = Get_PsthM_AllTrials_4rawProcessingTime_alignSac(Antifilename,best_target(n));
+        [psth_temp1, psth_temp2, psth_temp3, ntrs_temp] = Get_PsthM_AllTrials_3rawProcessingTime_alignSac(Antifilename,best_target(n));
         psth1(n,:) = psth_temp1;
         psth3(n,:) = psth_temp2;
         psth5(n,:) = psth_temp3;
-        psth7(n,:) = psth_temp4;
         ntrs(n,:) = ntrs_temp;
     catch
         disp(['error processing neuron  ', Antifilename  '  Dir1=' num2str(best_target(n))])
     end
-end
-jj=1;
-neuron = [];
-for j = 1:n
-    if length(find(psth1(j,:)~= 0))>0 && length(find(psth3(j,:) ~= 0))>0 && length(find(psth5(j,:) ~= 0))>0 && length(find(psth7(j,:) ~= 0))>0
-        psth1a(jj,:)=psth1(j,:);
-        psth3a(jj,:)=psth3(j,:);
-        psth5a(jj,:)=psth5(j,:);
-        psth7a(jj,:)=psth7(j,:);
-        ntrsa(jj,:)=ntrs(j,:);
-%         neuron=[neuron; Neurons_txt(j,1) num2cell(Neurons_num(j,1))]
-        jj=jj+1;
+    try
+        [psth_temp1, psth_temp2, psth_temp3, ntrs_temp] = Get_PsthM_AllTrials_3rawProcessingTime_alignSac(Antifilename,Opp_Sac(n));
+        psth2(n,:) = psth_temp1;
+        psth4(n,:) = psth_temp2;
+        psth6(n,:) = psth_temp3;
+    catch
+        disp(['error processing neuron  ', Antifilename  '  Dir2=' num2str(Opp_Sac(n))])
     end
 end
-nn=jj-1;
-ntrsa=sum(ntrsa);
-definepsthmax=50;
+nn=sum(ntrs~=0);
+ntrs=sum(ntrs);
+definepsthmax=15;
 
-% fig=openfig('samePFCneurons');
 figure
 set( gcf, 'Color', 'White', 'Unit', 'Normalized', ...
-    'Position', [0.2,0.2,0.7,0.7] ) ;
-
-bin_width = 0.1;  % 100 milliseconds bin
-bin_step = 0.01; %10 ms steps
-bin_edges=-.8:bin_step:1.4;
-bins = bin_edges+0.5*bin_width; %231 in total
-
+    'Position', [0.1,0.1,0.8,0.8] );
+bin_width = 0.05;  % 50 milliseconds bin
+bin_edges=-.8:bin_width:1.5;
+bins = bin_edges+0.5*bin_width;
 hold on
 try
-    psth1mean = sum(psth1a)/nn;
-    psth3mean = sum(psth3a)/nn;
-    psth5mean = sum(psth5a)/nn;
-    psth7mean = sum(psth7a)/nn;
-    for i = 1:221
-        psth1meanall(i) = sum(psth1mean([i:i+10]));
-        psth3meanall(i) = sum(psth3mean([i:i+10]));
-        psth5meanall(i) = sum(psth5mean([i:i+10]));
-        psth7meanall(i) = sum(psth7mean([i:i+10]));
-    end
+    psth1mean = sum(psth1-psth2)/nn(1);
+    psth3mean = sum(psth3-psth4)/nn(2);
+    psth5mean = sum(psth5-psth6)/nn(3);
 catch
 end
 try
-    plot(bins,psth1meanall,'color',[1,0.8,0.8],'LineWidth',4);
-    plot(bins,psth3meanall,'color',[1,0.4,0.4],'LineWidth',4);
-    plot(bins,psth5meanall,'color',[0.9,0,0],'LineWidth',4);
-    plot(bins,psth7meanall,'color',[0.6,0,0],'LineWidth',4);
+    plot(bins,psth1mean,'color',[1,0.6,0.6],'LineWidth',3);
+    plot(bins,psth3mean,'color',[1,0.2,0.2],'LineWidth',3);
+    plot(bins,psth5mean,'color',[0.8,0,0],'LineWidth',3);
 catch
 end
 
-set(gca ,'Color', 'White', 'XColor', 'k', 'YColor', 'k')
-line([0 0], [0 50],'color','k')
-axis([-0.5 1.5 0 definepsthmax+0.2])
+line([0 0], [-10 50],'color','k')
+axis([-0.5 1.5 -5 definepsthmax+0.2])
 xlim([-0.5 0.5])
 xlabel('Time s')
 ylabel('Firing Rate spikes/s')
-legend('\color{black} 0-0.075s','\color{black} 0.075-0.120s','\color{black} 0.120-0.150s','\color{black} >0.150s')
-gtext({[num2str(nn) ' neurons ' num2str(ntrsa(1)) '/' num2str(ntrsa(2)) '/' num2str(ntrsa(3)) '/' num2str(ntrsa(4)) ' trials']},'color','k', 'FontWeight', 'Bold')
+gtext({[num2str(nn) ' neurons ' num2str(ntrs) ' trials']},'color','k', 'FontWeight', 'Bold')
 
-end
-
+% axes( 'Position', [0, 0.95, 1, 0.05] ) ;
+% set( gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None' ) ;
+% text( 0.5, 0, 'PFC neurons Align on Sacaade', 'FontSize', 12', 'FontWeight', 'Bold', ...
+%     'HorizontalAlignment', 'Center', 'VerticalAlignment', 'middle' )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function Directions = Get_Dir(Neurons)
 Directions(1:length(Neurons),1:12) = NaN;

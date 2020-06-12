@@ -1,10 +1,12 @@
 function [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue(filename,class_num)
-%09-Oct-2019, J Zhu
+%4-Feb-2020, J Zhu
+% The analysis was performed in a time-resolved fashion, comparing
+% responses in a 100-ms-long moving window computed in 10-ms steps.
 load(filename)
-bin_width = 0.05;  % 50 milliseconds bin
-bin_edges=-0.8:bin_width:2.5;
-
-bins = bin_edges+0.5*bin_width;
+bin_width = 0.1;  % 100 milliseconds bin
+bin_step = 0.01; %10 ms steps
+bin_edges=-.8:bin_step:1.5;
+bins = bin_edges+0.5*bin_width; %231 in total
 
 allTS = [];
 m_counter = 0;
@@ -12,7 +14,6 @@ m_counter = 0;
 if ~isempty(MatData) && class_num <= length(MatData.class)
     for m1 = 1:length(MatData.class(class_num).ntr)
 %         if ~isempty(MatData.class(class_num).ntr(m1).Saccade_onT)
-
             try
                 TS=[];
                 TS = MatData.class(class_num).ntr(m1).TS-MatData.class(class_num).ntr(m1).Cue_onT;
@@ -21,7 +22,6 @@ if ~isempty(MatData) && class_num <= length(MatData.class)
             catch
             end
 %         end
-
     end
     if class_num + 8 <= length(MatData.class)
         for m2 = 1:length(MatData.class(class_num + 8).ntr)
@@ -55,7 +55,7 @@ else
 end
 psth_temp =histc(allTS,bin_edges)/(bin_width*ntrs);
 if isempty(psth_temp)
-    psth_temp = zeros(1,47);
+    psth_temp1 = zeros(1,length(bins));
 end
 ntrs_temp = ntrs;
 end

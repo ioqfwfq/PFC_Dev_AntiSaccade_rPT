@@ -1,19 +1,19 @@
+function Neuron_Data_PSTH_AntiSaccade_alltrials_aligncue
 % For AntiSaccade task
 % Plot result from all trials pooled together
-% Aligned by cue
-% 09-Oct-2019, J Zhu
+% Aligned on cue
+% 30-Mar-2020, J Zhu
 
 clear all
-[Neurons_num Neurons_txt] = xlsread('Neurons.xlsx','SigNeuronWM');
-
+[Neurons_num Neurons_txt] = xlsread('database.xlsx','youngPFC');
 warning off MATLAB:divideByZero
 Neurons = [Neurons_txt(:,1) num2cell(Neurons_num(:,1))];
 
 Best_Cue = Get_Maxes(Neurons);
-% opp_index = [5 6 7 8 1 2 3 4 9];
-% for n = 1:length(Best_Cue)
-%     Opp_Cue(n) = opp_index(Best_Cue(n));
-% end
+opp_index = [5 6 7 8 1 2 3 4 9];
+for n = 1:length(Best_Cue)
+    Opp_Cue(n) = opp_index(Best_Cue(n));
+end
 
 for n = 1:length(Neurons)
     Antifilename = [Neurons{n,1}(1:6),'_2_',num2str(Neurons{n,2})];
@@ -22,47 +22,73 @@ for n = 1:length(Neurons)
 
     try
         [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue(Antifilename,Best_Cue(n));
-        psth(n,:) = psth_temp;
-        ntrs(n) = ntrs_temp;
+        psth1(n,:) = psth_temp;
+        ntrs1(n) = ntrs_temp;
     catch
         disp(['error processing neuron  ', Antifilename  '  Dir1=' num2str(Best_Cue(n))])
     end
+    try
+        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue(Antifilename,Opp_Cue(n));
+        psth2(n,:) = psth_temp;
+        ntrs2(n) = ntrs_temp;
+    catch
+        disp(['error processing neuron  ', Antifilename  '  Dir2=' num2str(Opp_Cue(n))])
+    end
+    
 end
 
-nn=sum(ntrs~=0);
-ntrs=sum(ntrs);
+nn1=sum(ntrs1~=0);
+ntrs1=sum(ntrs1);
+nn2=sum(ntrs2~=0);
+ntrs2=sum(ntrs2);
 definepsthmax=50;
 
-% fig=openfig('figure2');
-figure
-set( gcf, 'Color', 'White', 'Unit', 'Normalized', ...
-    'Position', [0.1,0.1,0.8,0.8] ) ;
-bin_width = 0.05;  % 50 milliseconds bin
-bin_edges=-.8:bin_width:1.5;
-bins = bin_edges+0.5*bin_width;
-hold on
 try
-    psthmean = sum(psth)/nn;
-catch
-end
-try
-    plot(bins,psthmean,'c','LineWidth',3);
+    psth1mean = sum(psth1)/nn1;
+    psth2mean = sum(psth2)/nn2;
+    for i = 1:221
+        psth1meanall(i) = sum(psth1mean([i:i+10]));
+        psth2meanall(i) = sum(psth2mean([i:i+10]));
+    end
 catch
 end
 
-line([0 0], [0 50],'color','k')
+figure
+set(gcf, 'Color', 'White', 'Unit', 'Normalized', ...
+    'Position', [0.2,0.2,0.7,0.7] );
+set(gca ,'Color', 'White', 'XColor', 'k', 'YColor', 'k')
+bin_width = 0.1;  % 100 milliseconds bin
+bin_step = 0.01; %10 ms steps
+bin_edges=-.8:bin_step:1.4;
+bins = bin_edges+0.5*bin_width; %231 in total
+hold on
+try
+    plot(bins,psth1meanall,'color',[0,1,1],'LineWidth',2);
+catch
+end
+try
+    plot(bins,psth2meanall,'color',[1,0,1],'LineWidth',2);
+catch
+end
+
+patch([0 0.1 0.1 0], [0 0 definepsthmax definepsthmax], [0.8 0.8 0.8], 'EdgeColor', 'none')
+% try
+%     plot(bins,psth1meanall,'c','LineWidth',2);
+% catch
+% end
+% try
+%     plot(bins,psth2meanall,'m','LineWidth',2);
+% catch
+% end
 axis([-0.5 1.5 0 definepsthmax+0.2])
 xlim([-0.5 0.5])
 xlabel('Time s')
 ylabel('Firing Rate spikes/s')
+% title('\color{black} 0-0.075s')
+% legend('\color{green} correct','\color{gray} error')
+gtext({[num2str(nn1) ' neurons ' num2str(ntrs1(1)) ' trials']},'color','k', 'FontWeight', 'Bold')
 
-gtext({[num2str(nn) ' neurons ' num2str(ntrs) ' trials']},'color','c', 'FontWeight', 'Bold')
-
-
-% axes( 'Position', [0, 0.95, 1, 0.05] ) ;
-% set( gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None' ) ;
-% text( 0.5, 0, 'PFC visual neurons Align Cue Best cue location', 'FontSize', 12', 'FontWeight', 'Bold', ...
-%     'HorizontalAlignment', 'Center', 'VerticalAlignment', 'middle' )
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function Directions = Get_Dir(Neurons)
