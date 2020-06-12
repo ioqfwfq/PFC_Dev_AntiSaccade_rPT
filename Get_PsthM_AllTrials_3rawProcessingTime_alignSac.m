@@ -14,8 +14,9 @@ m_counter1 = 0;
 m_counter2 = 0;
 m_counter3 = 0;
 
-Threshold1 = 0.12;
-Threshold2 = 0.15;
+Threshold1 = 0.08;
+Threshold2 = 0.14;
+
 
 if ~isempty(MatData) && class_num <= length(MatData.class)
     for m1 = 1:length(MatData.class(class_num).ntr)

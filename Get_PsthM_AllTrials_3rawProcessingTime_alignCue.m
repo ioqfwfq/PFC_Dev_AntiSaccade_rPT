@@ -1,21 +1,22 @@
 function [psth_temp1, psth_temp2, psth_temp3, ntrs_temp] = Get_PsthM_AllTrials_3rawProcessingTime_alignCue(filename,class_num)
-% 05-Nov-2019, J Zhu
-% 3 group of rPT
+% 12-Nov-2019, J Zhu
+% 3 group of rPT, according to the behavioral data
+
 load(filename)
 bin_width = 0.05;  % 50 milliseconds bin
 bin_edges=-.8:bin_width:1.5;
 bins = bin_edges+0.5*bin_width;
 
-allTS1 = []; % 0-0.120s
-allTS2 = []; % 0.120-0.150s
-allTS3 = []; % >0.150s
+allTS1 = []; % 0-0.080s
+allTS2 = []; % 0.080-0.140s
+allTS3 = []; % >0.140s
 
 m_counter1 = 0;
 m_counter2 = 0;
 m_counter3 = 0;
 
-Threshold1 = 0.12;
-Threshold2 = 0.15;
+Threshold1 = 0.075;
+Threshold2 = 0.12;
 
 if ~isempty(MatData) && class_num <= length(MatData.class)
     for m1 = 1:length(MatData.class(class_num).ntr)

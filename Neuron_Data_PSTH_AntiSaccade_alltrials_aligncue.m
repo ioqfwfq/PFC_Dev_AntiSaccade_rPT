@@ -4,7 +4,8 @@
 % 09-Oct-2019, J Zhu
 
 clear all
-[Neurons_num Neurons_txt] = xlsread('test_VN.xlsx','all');
+[Neurons_num Neurons_txt] = xlsread('Neurons.xlsx','SigNeuronWM');
+
 warning off MATLAB:divideByZero
 Neurons = [Neurons_txt(:,1) num2cell(Neurons_num(:,1))];
 
@@ -17,14 +18,14 @@ Best_Cue = Get_Maxes(Neurons);
 for n = 1:length(Neurons)
     Antifilename = [Neurons{n,1}(1:6),'_2_',num2str(Neurons{n,2})];
 %     Profilename = [Neurons{n,1}(1:6),'_1_',num2str(Neurons{n,2})];
-    Errfilename = [Neurons{n,1}(1:6),'_2_',num2str(Neurons{n,2}),'_erriscuesac'];
+%     Errfilename = [Neurons{n,1}(1:6),'_2_',num2str(Neurons{n,2}),'_erriscuesac'];
 
     try
-        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue(Errfilename,Best_Cue(n));
+        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue(Antifilename,Best_Cue(n));
         psth(n,:) = psth_temp;
         ntrs(n) = ntrs_temp;
     catch
-        disp(['error processing neuron  ', Errfilename  '  Dir1=' num2str(Best_Cue(n))])
+        disp(['error processing neuron  ', Antifilename  '  Dir1=' num2str(Best_Cue(n))])
     end
 end
 
@@ -32,28 +33,29 @@ nn=sum(ntrs~=0);
 ntrs=sum(ntrs);
 definepsthmax=50;
 
-fig=openfig('figure2');
-% figure
-% set( gcf, 'Color', 'White', 'Unit', 'Normalized', ...
-%     'Position', [0.1,0.1,0.8,0.8] ) ;
-% bin_width = 0.05;  % 50 milliseconds bin
-% bin_edges=-.8:bin_width:1.5;
-% bins = bin_edges+0.5*bin_width;
-% hold on
-% try
-%     psthmean = sum(psth)/nn;
-% catch
-% end
-% try
-%     plot(bins,psthmean,'c','LineWidth',3);
-% catch
-% end
-% 
-% line([0 0], [0 50],'color','k')
-% axis([-0.5 1.5 0 definepsthmax+0.2])
-% xlim([-0.5 0.5])
-% xlabel('Time s')
-% ylabel('Firing Rate spikes/s')
+% fig=openfig('figure2');
+figure
+set( gcf, 'Color', 'White', 'Unit', 'Normalized', ...
+    'Position', [0.1,0.1,0.8,0.8] ) ;
+bin_width = 0.05;  % 50 milliseconds bin
+bin_edges=-.8:bin_width:1.5;
+bins = bin_edges+0.5*bin_width;
+hold on
+try
+    psthmean = sum(psth)/nn;
+catch
+end
+try
+    plot(bins,psthmean,'c','LineWidth',3);
+catch
+end
+
+line([0 0], [0 50],'color','k')
+axis([-0.5 1.5 0 definepsthmax+0.2])
+xlim([-0.5 0.5])
+xlabel('Time s')
+ylabel('Firing Rate spikes/s')
+
 gtext({[num2str(nn) ' neurons ' num2str(ntrs) ' trials']},'color','c', 'FontWeight', 'Bold')
 
 
