@@ -5,15 +5,18 @@ function Neuron_Data_FRbyneuron_AntiSaccade_alltrials_4rPT_alignsac
 % 29-Apr-2020, J Zhu
 
 clear all
-[Neurons_num Neurons_txt] = xlsread('test_MN.xlsx','allPFC');
-warning off MATLAB:divideByZero
+[Neurons_num Neurons_txt] = xlsread('database.xlsx','allPFC');
 Neurons = [Neurons_txt(:,1) num2cell(Neurons_num(:,1))];
+% warning off MATLAB:divideByZero
+% load('61sameneurons')
+% Neurons = [neuron(:,1) neuron(:,2)];
 
-Best_Cue = Get_Maxes(Neurons);
+Opp_Sac = Get_Maxes_sac(Neurons);
 opp_index = [5 6 7 8 1 2 3 4 9];
-for n = 1:length(Best_Cue)
-    Opp_Cue(n) = opp_index(Best_Cue(n));
+for n = 1:length(Opp_Sac)
+    Best_target(n) = opp_index(Opp_Sac(n));
 end
+
 fr1 = [];
 fr2 = [];
 fr3 = [];
@@ -23,14 +26,14 @@ for n = 1:length(Neurons)
     Antifilename = [Neurons{n,1}(1:6),'_2_',num2str(Neurons{n,2})];
 %     Errfilename = [Neurons{n,1}(1:6),'_2_',num2str(Neurons{n,2}),'_erriscuesac'];
     try
-        [FR_temp1, FR_temp2, FR_temp3, FR_temp4, ntrs_temp] = Get_FRbyneuron_AllTrials_4rawProcessingTime_alignSac(Antifilename,Best_Cue(n));
+        [FR_temp1, FR_temp2, FR_temp3, FR_temp4, ntrs_temp] = Get_FRbyneuron_AllTrials_4rawProcessingTime_alignSac(Antifilename,Best_target(n));
         fr1 = [fr1 FR_temp1];
-        fr3 = [fr3 FR_temp2];
-        fr5 = [fr5 FR_temp3];
-        fr7 = [fr7 FR_temp4];
+        fr2 = [fr2 FR_temp2];
+        fr3 = [fr3 FR_temp3];
+        fr4 = [fr4 FR_temp4];
         ntrs(n,:) = ntrs_temp;
     catch
-        disp(['error processing neuron  ', Antifilename  '  Dir1=' num2str(Best_Cue(n))])
+        disp(['error processing neuron  ', Antifilename  '  Dir1=' num2str(Best_target(n))])
     end
 end
 
@@ -38,9 +41,9 @@ nn=sum(ntrs~=0);
 ntrs=sum(ntrs);
 
 y(:,1)=fr1;
-y(:,2)=fr3;
-y(:,3)=fr5;
-y(:,4)=fr7;
+y(:,2)=fr2;
+y(:,3)=fr3;
+y(:,4)=fr4;
 % [p,tbl,stats] = anova1(y);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

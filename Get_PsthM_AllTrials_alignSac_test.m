@@ -1,5 +1,5 @@
-function [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac(filename,class_num)
-% 29-Apr-2020, J Zhu
+function [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac_test(filename,class_num)
+% 27-May-2020, J Zhu
 % The analysis was performed in a time-resolved fashion, comparing
 % responses in a 160-ms-long moving window computed in 160-ms steps.
 load(filename)

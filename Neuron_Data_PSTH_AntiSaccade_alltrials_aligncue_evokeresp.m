@@ -29,14 +29,16 @@ for n = 1:length(Neurons1)
     %     Profilename = [Neurons{n,1}(1:6),'_1_',num2str(Neurons{n,2})];
     %     Errfilename = [Neurons{n,1}(1:6),'_2_',num2str(Neurons{n,2}),'_erriscuesac'];
     try
-        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue(Antifilename,Best_Cue1(n));
+        %         [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue(Antifilename,Best_Cue1(n));
+        [psth_temp, ntrs_temp] = Get_PsthM_partial_aligncue(Antifilename,Best_Cue1(n),0.12,0.15);
         psth1(n,:) = psth_temp;
         ntrs1(n) = ntrs_temp;
     catch
         disp(['error processing neuron  ', Antifilename  '  Dir1=' num2str(Best_Cue1(n))])
     end
     try
-        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue(Antifilename,Opp_Cue1(n));
+        %         [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue(Antifilename,Opp_Cue1(n));
+        [psth_temp, ntrs_temp] = Get_PsthM_partial_aligncue(Antifilename,Opp_Cue1(n),0.12,0.15);
         psth3(n,:) = psth_temp;
     catch
         disp(['error processing neuron  ', Antifilename  '  Dir1=' num2str(Opp_Cue1(n))])
@@ -47,14 +49,16 @@ for n = 1:length(Neurons2)
     %     Profilename = [Neurons{n,1}(1:6),'_1_',num2str(Neurons{n,2})];
     %     Errfilename = [Neurons2{n,1}(1:6),'_2_',num2str(Neurons2{n,2}),'_erriscuesac'];
     try
-        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue(Antifilename,Best_Cue2(n));
+        %         [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue(Antifilename,Best_Cue2(n));
+        [psth_temp, ntrs_temp] = Get_PsthM_partial_aligncue(Antifilename,Best_Cue2(n),0.12,0.15);
         psth2(n,:) = psth_temp;
         ntrs2(n) = ntrs_temp;
     catch
         disp(['error processing neuron  ', Antifilename  '  Dir2=' num2str(Best_Cue2(n))])
     end
     try
-        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue(Antifilename,Opp_Cue2(n));
+        %         [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue(Antifilename,Opp_Cue2(n));
+        [psth_temp, ntrs_temp] = Get_PsthM_partial_aligncue(Antifilename,Opp_Cue2(n),0.12,0.15);
         psth4(n,:) = psth_temp;
     catch
         disp(['error processing neuron  ', Antifilename  '  Dir2=' num2str(Opp_Cue2(n))])
@@ -65,7 +69,7 @@ nn1=sum(ntrs1~=0);
 ntrs1=sum(ntrs1);
 nn2=sum(ntrs2~=0);
 ntrs2=sum(ntrs2);
-definepsthmax=20;
+definepsthmax=25;
 
 % fig=openfig('figure2');
 figure
@@ -74,31 +78,22 @@ set(gcf, 'Color', 'White', 'Unit', 'Normalized', ...
 set(gca ,'Color', 'White', 'XColor', 'k', 'YColor', 'k');
 bin_width = 0.1;  % 100 milliseconds bin
 bin_step = 0.01; %10 ms steps
-bin_edges=-.8:bin_step:1.4;
+bin_edges=-.8:bin_step:1.5;
 bins = bin_edges+0.5*bin_width; %231 in total
 hold on
+patch([0 0.1 0.1 0], [-5 -5 definepsthmax definepsthmax], [0.8 0.8 0.8], 'EdgeColor', 'none');
 try
     psth1mean = sum(psth1-psth3)/nn1;
     psth2mean = sum(psth2-psth4)/nn2;
-    for i = 1:221
-        psth1meanall(i) = sum(psth1mean([i:i+10]));
-        psth2meanall(i) = sum(psth2mean([i:i+10]));
-    end
 catch
 end
 try
-    plot(bins,psth1meanall,'r','LineWidth',3);
-    plot(bins,psth2meanall,'b','LineWidth',3);
+    plot(bins,psth1mean,'r','LineWidth',3);
+    plot(bins,psth2mean,'b','LineWidth',3);
 catch
 end
 
 % line([0 0], [0 50],'color','k')
-patch([0 0.1 0.1 0], [-5 -5 definepsthmax definepsthmax], [0.8 0.8 0.8], 'EdgeColor', 'none');
-try
-    plot(bins,psth2meanall,'b','LineWidth',3);
-    plot(bins,psth1meanall,'r','LineWidth',3);
-catch
-end
 axis([-0.5 1.5 -5 definepsthmax+0.2])
 xlim([-0.5 0.5])
 xlabel('Time s')
@@ -106,11 +101,6 @@ ylabel('Evoke Response spikes/s')
 legend('\color{red} Adult','\color{blue} Young')
 gtext({[num2str(nn1) ' neurons ' num2str(ntrs1) ' trials']},'color','r', 'FontWeight', 'Bold')
 gtext({[num2str(nn2) ' neurons ' num2str(ntrs2) ' trials']},'color','b', 'FontWeight', 'Bold')
-
-% axes( 'Position', [0, 0.95, 1, 0.05] ) ;
-% set( gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None' ) ;
-% text( 0.5, 0, 'PFC visual neurons Align Cue Best cue location', 'FontSize', 12', 'FontWeight', 'Bold', ...
-%     'HorizontalAlignment', 'Center', 'VerticalAlignment', 'middle' )
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

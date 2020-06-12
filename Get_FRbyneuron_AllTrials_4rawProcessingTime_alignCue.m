@@ -1,5 +1,5 @@
 function [FR_temp1, FR_temp2, FR_temp3, FR_temp4, ntrs_temp] = Get_FRbyneuron_AllTrials_4rawProcessingTime_alignCue(filename,class_num)
-%10-Jan-2019, J Zhu
+%10-Jan-2020, J Zhu
 %return the mena rate of neurons' firing rates of certain epoch of the trails for 4 groups rPT
 load(filename)
 
@@ -16,7 +16,7 @@ Threshold1 = 0.075;
 Threshold2 = 0.12;
 Threshold3 = 0.15;
 
-epoch_start = 0.05;
+epoch_start = 0.04;
 epoch_end = 0.12; % the certain time period
 
 if ~isempty(MatData) && class_num <= length(MatData.class)

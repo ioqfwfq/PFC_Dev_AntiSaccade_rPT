@@ -1,9 +1,9 @@
 function [psth_temp1, psth_temp2, psth_temp3, psth_temp4, ntrs_temp] = Get_PsthM_AllTrials_4rawProcessingTime_alignSac(filename,class_num)
-% 4-Feb-2020, J Zhu
+% 28-Apr-2020, J Zhu
 % The analysis was performed in a time-resolved fashion, comparing
-% responses in a 100-ms-long moving window computed in 10-ms steps.
+% responses in a 10-ms-long moving window computed in 10-ms steps.
 load(filename)
-bin_width = 0.1;  % 100 milliseconds bin
+bin_width = 0.01;  % 10 milliseconds bin
 bin_step = 0.01; %10 ms steps
 bin_edges=-.8:bin_step:1.5;
 bins = bin_edges+0.5*bin_width; %231 in total

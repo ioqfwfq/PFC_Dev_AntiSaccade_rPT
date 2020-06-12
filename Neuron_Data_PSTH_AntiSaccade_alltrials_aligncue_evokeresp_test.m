@@ -1,8 +1,8 @@
-function Neuron_Data_PSTH_AntiSaccade_alltrials_alignsac_evokeresp
+function Neuron_Data_PSTH_AntiSaccade_alltrials_aligncue_evokeresp_test
 % For AntiSaccade task
 % Plot result from all trials pooled together
-% Aligned by cue
-% Apr-2020, J Zhu
+% Aligned on cue
+% 27-May-2020, J Zhu
 
 % calculate the evoke response for adult and young seperately
 
@@ -13,52 +13,55 @@ warning off MATLAB:divideByZero
 Neurons1 = [Neurons_txt1(:,1) num2cell(Neurons_num1(:,1))];
 Neurons2 = [Neurons_txt2(:,1) num2cell(Neurons_num2(:,1))];
 
-Opp_Sac1 = Get_Maxes_sac(Neurons1);
+Best_Cue1 = Get_Maxes(Neurons1);
 opp_index = [5 6 7 8 1 2 3 4 9];
-for n = 1:length(Opp_Sac1)
-    best_target1(n) = opp_index(Opp_Sac1(n));
+for n = 1:length(Best_Cue1)
+    Opp_Cue1(n) = opp_index(Best_Cue1(n));
 end
-Opp_Sac2 = Get_Maxes_sac(Neurons2);
+Best_Cue2 = Get_Maxes(Neurons2);
 opp_index = [5 6 7 8 1 2 3 4 9];
-for n = 1:length(Opp_Sac2)
-    best_target2(n) = opp_index(Opp_Sac2(n));
+for n = 1:length(Best_Cue2)
+    Opp_Cue2(n) = opp_index(Best_Cue2(n));
 end
-
 
 for n = 1:length(Neurons1)
     Antifilename = [Neurons1{n,1}(1:6),'_2_',num2str(Neurons1{n,2})];
-%     Profilename = [Neurons{n,1}(1:6),'_1_',num2str(Neurons{n,2})];
-    Errfilename = [Neurons1{n,1}(1:6),'_2_',num2str(Neurons1{n,2}),'_erriscuesac'];
+    %     Profilename = [Neurons{n,1}(1:6),'_1_',num2str(Neurons{n,2})];
+    %     Errfilename = [Neurons{n,1}(1:6),'_2_',num2str(Neurons{n,2}),'_erriscuesac'];
     try
-        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac(Antifilename,best_target1(n));
+                [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue_test(Antifilename,Best_Cue1(n));
+%         [psth_temp, ntrs_temp] = Get_PsthM_partial_aligncue_test(Antifilename,Best_Cue1(n),0.12,0.15);
         psth1(n,:) = psth_temp;
         ntrs1(n) = ntrs_temp;
     catch
-        disp(['error processing neuron  ', Antifilename  '  Dir1=' num2str(best_target1(n))])
+        disp(['error processing neuron  ', Antifilename  '  Dir1=' num2str(Best_Cue1(n))])
     end
     try
-        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac(Antifilename,Opp_Sac1(n));
+        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue_test(Antifilename,Opp_Cue1(n));
+        %         [psth_temp, ntrs_temp] = Get_PsthM_partial_aligncue(Antifilename,Opp_Cue1(n),0.12,0.15);
         psth3(n,:) = psth_temp;
     catch
-        disp(['error processing neuron  ', Antifilename  '  Dir1=' num2str(Opp_Sac1(n))])
+        disp(['error processing neuron  ', Antifilename  '  Dir1=' num2str(Opp_Cue1(n))])
     end
 end
 for n = 1:length(Neurons2)
     Antifilename = [Neurons2{n,1}(1:6),'_2_',num2str(Neurons2{n,2})];
-%     Profilename = [Neurons{n,1}(1:6),'_1_',num2str(Neurons{n,2})];
-    Errfilename = [Neurons2{n,1}(1:6),'_2_',num2str(Neurons2{n,2}),'_erriscuesac'];
+    %     Profilename = [Neurons{n,1}(1:6),'_1_',num2str(Neurons{n,2})];
+    %     Errfilename = [Neurons2{n,1}(1:6),'_2_',num2str(Neurons2{n,2}),'_erriscuesac'];
     try
-        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac(Antifilename,best_target2(n));
+        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue_test(Antifilename,Best_Cue2(n));
+        %         [psth_temp, ntrs_temp] = Get_PsthM_partial_aligncue(Antifilename,Best_Cue2(n),0.12,0.15);
         psth2(n,:) = psth_temp;
         ntrs2(n) = ntrs_temp;
     catch
-        disp(['error processing neuron  ', Antifilename  '  Dir2=' num2str(best_target2(n))])
+        disp(['error processing neuron  ', Antifilename  '  Dir2=' num2str(Best_Cue2(n))])
     end
     try
-        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac(Antifilename,Opp_Sac2(n));
+        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue_test(Antifilename,Opp_Cue2(n));
+        %         [psth_temp, ntrs_temp] = Get_PsthM_partial_aligncue(Antifilename,Opp_Cue2(n),0.12,0.15);
         psth4(n,:) = psth_temp;
     catch
-        disp(['error processing neuron  ', Antifilename  '  Dir2=' num2str(Opp_Sac2(n))])
+        disp(['error processing neuron  ', Antifilename  '  Dir2=' num2str(Opp_Cue2(n))])
     end
 end
 
@@ -66,18 +69,19 @@ nn1=sum(ntrs1~=0);
 ntrs1=sum(ntrs1);
 nn2=sum(ntrs2~=0);
 ntrs2=sum(ntrs2);
-definepsthmax=20;
+definepsthmax=25;
 
 % fig=openfig('figure2');
 figure
 set(gcf, 'Color', 'White', 'Unit', 'Normalized', ...
     'Position', [0.2,0.2,0.7,0.7] );
 set(gca ,'Color', 'White', 'XColor', 'k', 'YColor', 'k');
-bin_width = 0.01;  % 100 milliseconds bin
+bin_width = 0.1;  % 100 milliseconds bin
 bin_step = 0.01; %10 ms steps
 bin_edges=-.8:bin_step:1.5;
 bins = bin_edges+0.5*bin_width; %231 in total
 hold on
+patch([0 0.1 0.1 0], [-5 -5 definepsthmax definepsthmax], [0.8 0.8 0.8], 'EdgeColor', 'none');
 try
     psth1mean = sum(psth1-psth3)/nn1;
     psth2mean = sum(psth2-psth4)/nn2;
@@ -89,7 +93,7 @@ try
 catch
 end
 
-line([0 0], [-10 50],'color','k')
+% line([0 0], [0 50],'color','k')
 axis([-0.5 1.5 -5 definepsthmax+0.2])
 xlim([-0.5 0.5])
 xlabel('Time s')
@@ -97,11 +101,6 @@ ylabel('Evoke Response spikes/s')
 legend('\color{red} Adult','\color{blue} Young')
 gtext({[num2str(nn1) ' neurons ' num2str(ntrs1) ' trials']},'color','r', 'FontWeight', 'Bold')
 gtext({[num2str(nn2) ' neurons ' num2str(ntrs2) ' trials']},'color','b', 'FontWeight', 'Bold')
-
-% axes( 'Position', [0, 0.95, 1, 0.05] ) ;
-% set( gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None' ) ;
-% text( 0.5, 0, 'PFC visual neurons Align Cue Best cue location', 'FontSize', 12', 'FontWeight', 'Bold', ...
-%     'HorizontalAlignment', 'Center', 'VerticalAlignment', 'middle' )
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -115,17 +114,17 @@ for n = 1:length(Neurons)
     Directions(n,1:12) = Direction(1:12);
 end
 end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function max_results = Get_Maxes(Neurons)
 max_result(1:length(Neurons),1:3) = NaN;
-for n = 1:length(Neurons1)
-    Profilename = [Neurons1{n,1}([1:6]),'_1_',num2str(Neurons1{n,2})];
-    Antifilename = [Neurons1{n,1}([1:6]),'_2_',num2str(Neurons1{n,2})];
+for n = 1:length(Neurons)
+    Profilename = [Neurons{n,1}([1:6]),'_1_',num2str(Neurons{n,2})];
+    Antifilename = [Neurons{n,1}([1:6]),'_2_',num2str(Neurons{n,2})];
     temp = Neuron_Data_Maxcuerate_ProFrom4LOC(Profilename,Antifilename);
     max_results(n,1:length(temp)) = temp(1);
 end
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function max_results = Get_Maxes_sac(Neurons)
 max_result(1:length(Neurons),1:3) = NaN;
 for n = 1:length(Neurons)
