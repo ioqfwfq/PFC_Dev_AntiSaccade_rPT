@@ -1,9 +1,11 @@
 % For AntiSaccade task
 % Plot result from all trials pooled together (3 groups of rPT, 1 condition for each group)
 % Align on saccade
+% calculate the PSTH difference between best and opposite location
+% J zhu, Nov. 2019
 
 clear all
-[Neurons_num Neurons_txt] = xlsread('test_MN.xlsx','all');
+[Neurons_num Neurons_txt] = xlsread('database.xlsx','youngPFC');
 warning off MATLAB:divideByZero
 Neurons = [Neurons_txt(:,1) num2cell(Neurons_num(:,1))];
 
@@ -22,144 +24,108 @@ for n = 1:length(Neurons)
         psth1(n,:) = psth_temp1;
         psth3(n,:) = psth_temp2;
         psth5(n,:) = psth_temp3;
-        psth7(n,:) = psth_temp4;
-        ntrs(n,:) = ntrs_temp;
+        ntrs1(n,:) = ntrs_temp;
     catch
         disp(['error processing neuron  ', Antifilename  '  Dir1=' num2str(Best_target(n))])
     end
     try
-        [psth_temp1, psth_temp2, psth_temp3, ntrs_temp] = Get_PsthM_AllTrials_3rawProcessingTime_alignSac(Antifilename,Best_Cue(n));
+        [psth_temp1, psth_temp2, psth_temp3, ntrs_temp] = Get_PsthM_AllTrials_3rawProcessingTime_alignSac(Antifilename,Opp_Sac(n));
         psth2(n,:) = psth_temp1;
         psth4(n,:) = psth_temp2;
         psth6(n,:) = psth_temp3;
-        psth8(n,:) = psth_temp4;
+        ntrs2(n,:) = ntrs_temp;
     catch
-        disp(['error processing neuron  ', Antifilename  '  Dir2=' num2str(Best_Cue(n))])
+        disp(['error processing neuron  ', Antifilename  '  Dir2=' num2str(Opp_Sac(n))])
     end
 end
 
-nn=sum(ntrs~=0);
-ntrs=sum(ntrs);
-definepsthmax=50;
+nn1=sum(ntrs1~=0);
+nn2=sum(ntrs2~=0);
+ntrs1=sum(ntrs1);
+ntrs2=sum(ntrs2);
+definepsthmax=18;
 
-% fig=openfig('figure2');
-figure
-set( gcf, 'Color', 'White', 'Unit', 'Normalized', ...
-    'Position', [0.1,0.1,0.8,0.8] ) ;
-subplot(2,2,1)
+fig=openfig('figure2');
+% figure
+% set( gcf, 'Color', 'White', 'Unit', 'Normalized', ...
+%     'Position', [0.1,0.1,0.8,0.8] ) ;
+subplot(1,3,1)
 bin_width = 0.05;  % 50 milliseconds bin
 bin_edges=-.8:bin_width:1.5;
 bins = bin_edges+0.5*bin_width;
 hold on
 try
-    psth1mean = sum(psth1)/nn(1);
-    psth2mean = sum(psth2)/nn(1);
+    psth1mean = sum(psth1)/nn1(1);
+    psth2mean = sum(psth2)/nn2(1);
+    d1=psth1mean-psth2mean;
 catch
 end
 try
-    plot(bins,psth1mean,'b','LineWidth',3);
+    plot(bins,d1,'b','LineWidth',3);
 catch
 end
-% try
-%     plot(bins,psth2mean,'b','LineWidth',3);
-% catch
-% end
-line([0 0], [0 50],'color','k')
-axis([-0.5 1.5 0 definepsthmax+0.2])
+line([0 0], [-25 25],'color','k')
+axis([-0.5 1.5 -10 definepsthmax+0.2])
 xlim([-0.5 0.5])
 xlabel('Time s')
 ylabel('Firing Rate spikes/s')
-title('0-0.075s')
-gtext({[num2str(nn(1)) ' neurons ' num2str(ntrs(1)) ' trials']},'color','b', 'FontWeight', 'Bold')
+title('0-0.080s')
+gtext({[num2str(nn1(1)) ' neurons ' num2str(ntrs1(1)) ' trials']},'color','b', 'FontWeight', 'Bold')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-subplot(2,2,2)
+subplot(1,3,2)
 bin_width = 0.05;  % 50 milliseconds bin
 bin_edges=-.8:bin_width:1.5;
 bins = bin_edges+0.5*bin_width;
 hold on
-
 try
-    psth3mean = sum(psth3)/nn(2);
-    psth4mean = sum(psth4)/nn(2);
+    psth3mean = sum(psth3)/nn1(2);
+    psth4mean = sum(psth4)/nn2(2);
+    d2=psth3mean-psth4mean;
 catch
 end
 try
-    plot(bins,psth3mean,'b','LineWidth',3);
+    plot(bins,d2,'b','LineWidth',3);
 catch
 end
-% try
-%     plot(bins,psth4mean,'b','LineWidth',3);
-% catch
-% end
-line([0 0], [0 50],'color','k')
-axis([-0.5 1.5 0 definepsthmax+0.2])
+line([0 0], [-25 25],'color','k')
+axis([-0.5 1.5 -10 definepsthmax+0.2])
 xlim([-0.5 0.5])
 xlabel('Time s')
 ylabel('Firing Rate spikes/s')
-title('0.075-0.120s')
-gtext({[num2str(nn(2)) ' neurons ' num2str(ntrs(2)) ' trials']},'color','b', 'FontWeight', 'Bold')
+title('0.080-0.140s')
+gtext({[num2str(nn1(2)) ' neurons ' num2str(ntrs1(2)) ' trials']},'color','b', 'FontWeight', 'Bold')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-subplot(2,2,3)
+subplot(1,3,3)
 bin_width = 0.05;  % 50 milliseconds bin
 bin_edges=-.8:bin_width:1.5;
 bins = bin_edges+0.5*bin_width;
 hold on
-
 try
-    psth5mean = sum(psth5)/nn(3);
-    psth6mean = sum(psth6)/nn(3);
+    psth5mean = sum(psth5)/nn1(3);
+    psth6mean = sum(psth6)/nn2(3);
+    d3=psth5mean-psth6mean;
 catch
 end
 try
-    plot(bins,psth5mean,'b','LineWidth',3);
+    plot(bins,d3,'b','LineWidth',3);
 catch
 end
-% try
-%     plot(bins,psth6mean,'b','LineWidth',3);
-% catch
-% end
-line([0 0], [0 50],'color','k')
-axis([-0.5 1.5 0 definepsthmax+0.2])
+line([0 0], [-25 50],'color','k')
+axis([-0.5 1.5 -10 definepsthmax+0.2])
 xlim([-0.5 0.5])
 xlabel('Time s')
 ylabel('Firing Rate spikes/s')
-title('0.120-0.150s')
-gtext({[num2str(nn(3)) ' neurons ' num2str(ntrs(3)) ' trials']},'color','b', 'FontWeight', 'Bold')
+title('>0.140s')
+gtext({[num2str(nn1(3)) ' neurons ' num2str(ntrs1(3)) ' trials']},'color','b', 'FontWeight', 'Bold')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-subplot(2,2,4)
-bin_width = 0.05;  % 50 milliseconds bin
-bin_edges=-.8:bin_width:1.5;
-bins = bin_edges+0.5*bin_width;
-hold on
 
-try
-    psth7mean = sum(psth7)/nn(4);
-    psth8mean = sum(psth8)/nn(4);    
-catch
-end
-try
-    plot(bins,psth7mean,'b','LineWidth',3);
-catch
-end
-% try
-%     plot(bins,psth8mean,'b','LineWidth',3);
-% catch
-% end
-line([0 0], [0 50],'color','k')
-axis([-0.5 1.5 0 definepsthmax+0.2])
-xlim([-0.5 0.5])
-xlabel('Time s')
-ylabel('Firing Rate spikes/s')
-title('>0.150s')
-gtext({[num2str(nn(4)) ' neurons ' num2str(ntrs(4)) ' trials']},'color','b', 'FontWeight', 'Bold')
-
-% axes( 'Position', [0, 0.95, 1, 0.05] ) ;
-% set( gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None' ) ;
-% text( 0.5, 0, 'PFC neurons Align Sac Best saccade location', 'FontSize', 12', 'FontWeight', 'Bold', ...
-%     'HorizontalAlignment', 'Center', 'VerticalAlignment', 'middle' )
+axes( 'Position', [0, 0.95, 1, 0.05] ) ;
+set( gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None' ) ;
+text( 0.5, 0, 'PFC neurons Align Sac highest saccade responds - lowest saccade responds', 'FontSize', 12', 'FontWeight', 'Bold', ...
+    'HorizontalAlignment', 'Center', 'VerticalAlignment', 'middle' )
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function Directions = Get_Dir(Neurons)
