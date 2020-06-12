@@ -1,4 +1,5 @@
 function [psth_temp1, psth_temp2, psth_temp3, psth_temp4, ntrs_temp] = Get_PsthM_AllTrials_rawProcessingTime_alignSac(filename,class_num)
+% 02-Oct-2019, J Zhu
 load(filename)
 bin_width = 0.05;  % 50 milliseconds bin
 bin_edges=-.8:bin_width:1.5;
@@ -17,10 +18,10 @@ Threshold1 = 0.075;
 Threshold2 = 0.12;
 Threshold3 = 0.15;
 
-if ~isempty(MatData)
+if ~isempty(MatData) && class_num <= length(MatData.class)
     for m1 = 1:length(MatData.class(class_num).ntr)
         if ~isempty(MatData.class(class_num).ntr(m1).Saccade_onT)
-            if MatData.class(class_num).ntr(m1).Saccade_onT - MatData.class(class_num).ntr(m1).Cue_onT < Threshold1         
+            if MatData.class(class_num).ntr(m1).Saccade_onT - MatData.class(class_num).ntr(m1).Cue_onT < Threshold1
                 try
                     TS=[];
                     TS = MatData.class(class_num).ntr(m1).TS-MatData.class(class_num).ntr(m1).Saccade_onT;
@@ -58,82 +59,86 @@ if ~isempty(MatData)
             end
         end
     end
-    for m2 = 1:length(MatData.class(class_num + 8).ntr)
-        if ~isempty(MatData.class(class_num + 8).ntr(m2).Saccade_onT)
-            if MatData.class(class_num + 8).ntr(m2).Saccade_onT - MatData.class(class_num + 8).ntr(m2).Cue_onT < Threshold1
-                try
-                    TS=[];
-                    TS = MatData.class(class_num + 8).ntr(m2).TS-MatData.class(class_num + 8).ntr(m2).Saccade_onT;
-                    allTS1 = [allTS1 TS];
-                    m_counter1 = m_counter1 + 1;
-                catch
+    if class_num + 8 <= length(MatData.class)
+        for m2 = 1:length(MatData.class(class_num + 8).ntr)
+            if ~isempty(MatData.class(class_num + 8).ntr(m2).Saccade_onT)
+                if MatData.class(class_num + 8).ntr(m2).Saccade_onT - MatData.class(class_num + 8).ntr(m2).Cue_onT < Threshold1
+                    try
+                        TS=[];
+                        TS = MatData.class(class_num + 8).ntr(m2).TS-MatData.class(class_num + 8).ntr(m2).Saccade_onT;
+                        allTS1 = [allTS1 TS];
+                        m_counter1 = m_counter1 + 1;
+                    catch
+                    end
                 end
-            end
-            if MatData.class(class_num + 8).ntr(m2).Saccade_onT - MatData.class(class_num + 8).ntr(m2).Cue_onT >= Threshold1 && MatData.class(class_num + 8).ntr(m2).Saccade_onT - MatData.class(class_num + 8).ntr(m2).Cue_onT < Threshold2
-                try
-                    TS=[];
-                    TS = MatData.class(class_num + 8).ntr(m2).TS-MatData.class(class_num + 8).ntr(m2).Saccade_onT;
-                    allTS2 = [allTS2 TS];
-                    m_counter2 = m_counter2 + 1;
-                catch
+                if MatData.class(class_num + 8).ntr(m2).Saccade_onT - MatData.class(class_num + 8).ntr(m2).Cue_onT >= Threshold1 && MatData.class(class_num + 8).ntr(m2).Saccade_onT - MatData.class(class_num + 8).ntr(m2).Cue_onT < Threshold2
+                    try
+                        TS=[];
+                        TS = MatData.class(class_num + 8).ntr(m2).TS-MatData.class(class_num + 8).ntr(m2).Saccade_onT;
+                        allTS2 = [allTS2 TS];
+                        m_counter2 = m_counter2 + 1;
+                    catch
+                    end
                 end
-            end
-            if  MatData.class(class_num + 8).ntr(m2).Saccade_onT - MatData.class(class_num + 8).ntr(m2).Cue_onT >= Threshold2 && MatData.class(class_num + 8).ntr(m2).Saccade_onT - MatData.class(class_num + 8).ntr(m2).Cue_onT < Threshold3
-                try
-                    TS=[];
-                    TS = MatData.class(class_num + 8).ntr(m2).TS-MatData.class(class_num + 8).ntr(m2).Saccade_onT;
-                    allTS3 = [allTS3 TS];
-                    m_counter3 = m_counter3 + 1;
-                catch
+                if  MatData.class(class_num + 8).ntr(m2).Saccade_onT - MatData.class(class_num + 8).ntr(m2).Cue_onT >= Threshold2 && MatData.class(class_num + 8).ntr(m2).Saccade_onT - MatData.class(class_num + 8).ntr(m2).Cue_onT < Threshold3
+                    try
+                        TS=[];
+                        TS = MatData.class(class_num + 8).ntr(m2).TS-MatData.class(class_num + 8).ntr(m2).Saccade_onT;
+                        allTS3 = [allTS3 TS];
+                        m_counter3 = m_counter3 + 1;
+                    catch
+                    end
                 end
-            end
-            if MatData.class(class_num + 8).ntr(m2).Saccade_onT - MatData.class(class_num + 8).ntr(m2).Cue_onT >= Threshold3
-                try
-                    TS=[];
-                    TS = MatData.class(class_num + 8).ntr(m2).TS-MatData.class(class_num + 8).ntr(m2).Saccade_onT;
-                    allTS4 = [allTS4 TS];
-                    m_counter4 = m_counter4 + 1;
-                catch
+                if MatData.class(class_num + 8).ntr(m2).Saccade_onT - MatData.class(class_num + 8).ntr(m2).Cue_onT >= Threshold3
+                    try
+                        TS=[];
+                        TS = MatData.class(class_num + 8).ntr(m2).TS-MatData.class(class_num + 8).ntr(m2).Saccade_onT;
+                        allTS4 = [allTS4 TS];
+                        m_counter4 = m_counter4 + 1;
+                    catch
+                    end
                 end
             end
         end
-    end
-    for m3 = 1:length(MatData.class(class_num + 16).ntr)
-        if ~isempty(MatData.class(class_num + 16).ntr(m3).Saccade_onT)
-            if MatData.class(class_num + 16).ntr(m3).Saccade_onT - MatData.class(class_num + 16).ntr(m3).Cue_onT < Threshold1
-                try
-                    TS=[];
-                    TS = MatData.class(class_num + 16).ntr(m3).TS-MatData.class(class_num + 16).ntr(m3).Saccade_onT;
-                    allTS1 = [allTS1 TS];
-                    m_counter1 = m_counter1 + 1;
-                catch
-                end
-            end
-            if MatData.class(class_num + 16).ntr(m3).Saccade_onT - MatData.class(class_num + 16).ntr(m3).Cue_onT >= Threshold1 && MatData.class(class_num + 16).ntr(m3).Saccade_onT - MatData.class(class_num + 16).ntr(m3).Cue_onT < Threshold2
-                try
-                    TS=[];
-                    TS = MatData.class(class_num + 16).ntr(m3).TS-MatData.class(class_num + 16).ntr(m3).Saccade_onT;
-                    allTS2 = [allTS2 TS];
-                    m_counter2 = m_counter2 + 1;
-                catch
-                end
-            end
-            if  MatData.class(class_num + 16).ntr(m3).Saccade_onT - MatData.class(class_num + 16).ntr(m3).Cue_onT >= Threshold2 && MatData.class(class_num + 16).ntr(m3).Saccade_onT - MatData.class(class_num + 16).ntr(m3).Cue_onT < Threshold3
-                try
-                    TS=[];
-                    TS = MatData.class(class_num + 16).ntr(m3).TS-MatData.class(class_num + 16).ntr(m3).Saccade_onT;
-                    allTS3 = [allTS3 TS];
-                    m_counter3 = m_counter3 + 1;
-                catch
-                end
-            end
-            if MatData.class(class_num + 16).ntr(m3).Saccade_onT - MatData.class(class_num + 16).ntr(m3).Cue_onT >= Threshold3
-                try
-                    TS=[];
-                    TS = MatData.class(class_num + 16).ntr(m3).TS-MatData.class(class_num + 16).ntr(m3).Saccade_onT;
-                    allTS4 = [allTS4 TS];
-                    m_counter4 = m_counter4 + 1;
-                catch
+        if class_num + 16 <= length(MatData.class)
+            for m3 = 1:length(MatData.class(class_num + 16).ntr)
+                if ~isempty(MatData.class(class_num + 16).ntr(m3).Saccade_onT)
+                    if MatData.class(class_num + 16).ntr(m3).Saccade_onT - MatData.class(class_num + 16).ntr(m3).Cue_onT < Threshold1
+                        try
+                            TS=[];
+                            TS = MatData.class(class_num + 16).ntr(m3).TS-MatData.class(class_num + 16).ntr(m3).Saccade_onT;
+                            allTS1 = [allTS1 TS];
+                            m_counter1 = m_counter1 + 1;
+                        catch
+                        end
+                    end
+                    if MatData.class(class_num + 16).ntr(m3).Saccade_onT - MatData.class(class_num + 16).ntr(m3).Cue_onT >= Threshold1 && MatData.class(class_num + 16).ntr(m3).Saccade_onT - MatData.class(class_num + 16).ntr(m3).Cue_onT < Threshold2
+                        try
+                            TS=[];
+                            TS = MatData.class(class_num + 16).ntr(m3).TS-MatData.class(class_num + 16).ntr(m3).Saccade_onT;
+                            allTS2 = [allTS2 TS];
+                            m_counter2 = m_counter2 + 1;
+                        catch
+                        end
+                    end
+                    if  MatData.class(class_num + 16).ntr(m3).Saccade_onT - MatData.class(class_num + 16).ntr(m3).Cue_onT >= Threshold2 && MatData.class(class_num + 16).ntr(m3).Saccade_onT - MatData.class(class_num + 16).ntr(m3).Cue_onT < Threshold3
+                        try
+                            TS=[];
+                            TS = MatData.class(class_num + 16).ntr(m3).TS-MatData.class(class_num + 16).ntr(m3).Saccade_onT;
+                            allTS3 = [allTS3 TS];
+                            m_counter3 = m_counter3 + 1;
+                        catch
+                        end
+                    end
+                    if MatData.class(class_num + 16).ntr(m3).Saccade_onT - MatData.class(class_num + 16).ntr(m3).Cue_onT >= Threshold3
+                        try
+                            TS=[];
+                            TS = MatData.class(class_num + 16).ntr(m3).TS-MatData.class(class_num + 16).ntr(m3).Saccade_onT;
+                            allTS4 = [allTS4 TS];
+                            m_counter4 = m_counter4 + 1;
+                        catch
+                        end
+                    end
                 end
             end
         end

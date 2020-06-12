@@ -6,7 +6,7 @@
 % in same figure. 09-Sep-2019, J Zhu
 
 clear all
-[Neurons_num Neurons_txt] = xlsread('testVN.xlsx','all');
+[Neurons_num Neurons_txt] = xlsread('test_VN_PPC.xlsx','');
 warning off MATLAB:divideByZero
 Neurons = [Neurons_txt(:,1) num2cell(Neurons_num(:,1))];
 
