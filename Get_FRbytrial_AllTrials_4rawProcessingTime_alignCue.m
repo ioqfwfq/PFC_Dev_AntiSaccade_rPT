@@ -1,23 +1,27 @@
-function [psth_temp1, psth_temp2, psth_temp3, ntrs_temp] = Get_PsthM_AllTrials_3rawProcessingTime_alignCue(filename,class_num)
-% 1-1-2020, J Zhu
-% 3 group of rPT, according to the behavioral data
-% testing ES models
-
+function [FR_temp1, FR_temp2, FR_temp3, FR_temp4, ntrs_temp] = Get_FRbytrial_AllTrials_4rawProcessingTime_alignCue(filename,class_num)
+%10-Jan-2019, J Zhu
+%return the firing rates of certain epoch of the trails for 4 groups rPT
 load(filename)
-bin_width = 0.05;  % 50 milliseconds bin
-bin_edges=-.8:bin_width:1.5;
-bins = bin_edges+0.5*bin_width;
 
-allTS1 = []; % 0-0.080s
-allTS2 = []; % 0.080-0.140s
-allTS3 = []; % >0.140s
+% bin_width = 0.05;  % 50 milliseconds bin
+% bin_edges=-.8:bin_width:1.5;
+% bins = bin_edges+0.5*bin_width;
 
+nTS1 = []; % 0-0.075s
+nTS2 = []; % 0.075-0.120s
+nTS3 = []; % 0.120-0.150s
+nTS4 = []; % >0.150s
 m_counter1 = 0;
 m_counter2 = 0;
 m_counter3 = 0;
+m_counter4 = 0;
 
-Threshold1 = 0.08;
-Threshold2 = 0.14;
+Threshold1 = 0.075;
+Threshold2 = 0.12;
+Threshold3 = 0.15;
+
+epoch_start = 0.05;
+epoch_end = 0.12; % the certain time period
 
 if ~isempty(MatData) && class_num <= length(MatData.class)
     for m1 = 1:length(MatData.class(class_num).ntr)
@@ -26,7 +30,8 @@ if ~isempty(MatData) && class_num <= length(MatData.class)
                 try
                     TS=[];
                     TS = MatData.class(class_num).ntr(m1).TS-MatData.class(class_num).ntr(m1).Cue_onT;
-                    allTS1 = [allTS1 TS];
+                    nTS = length(find(TS>=epoch_start & TS< epoch_end));
+                    nTS1 = [nTS nTS1];
                     m_counter1 = m_counter1 + 1;
                 catch
                 end
@@ -35,17 +40,29 @@ if ~isempty(MatData) && class_num <= length(MatData.class)
                 try
                     TS=[];
                     TS = MatData.class(class_num).ntr(m1).TS-MatData.class(class_num).ntr(m1).Cue_onT;
-                    allTS2 = [allTS2 TS];
+                    nTS = length(find(TS>=epoch_start & TS< epoch_end));
+                    nTS2 = [nTS nTS2];
                     m_counter2 = m_counter2 + 1;
                 catch
                 end
             end
-            if  MatData.class(class_num).ntr(m1).Saccade_onT - MatData.class(class_num).ntr(m1).Cue_onT >= Threshold2
+            if  MatData.class(class_num).ntr(m1).Saccade_onT - MatData.class(class_num).ntr(m1).Cue_onT >= Threshold2 && MatData.class(class_num).ntr(m1).Saccade_onT - MatData.class(class_num).ntr(m1).Cue_onT < Threshold3
                 try
                     TS=[];
                     TS = MatData.class(class_num).ntr(m1).TS-MatData.class(class_num).ntr(m1).Cue_onT;
-                    allTS3 = [allTS3 TS];
+                    nTS = length(find(TS>=epoch_start & TS< epoch_end));
+                    nTS3 = [nTS nTS3];
                     m_counter3 = m_counter3 + 1;
+                catch
+                end
+            end
+            if MatData.class(class_num).ntr(m1).Saccade_onT - MatData.class(class_num).ntr(m1).Cue_onT >= Threshold3
+                try
+                    TS=[];
+                    TS = MatData.class(class_num).ntr(m1).TS-MatData.class(class_num).ntr(m1).Cue_onT;
+                    nTS = length(find(TS>=epoch_start & TS< epoch_end));
+                    nTS4 = [nTS nTS4];
+                    m_counter4 = m_counter4 + 1;
                 catch
                 end
             end
@@ -58,7 +75,8 @@ if ~isempty(MatData) && class_num <= length(MatData.class)
                     try
                         TS=[];
                         TS = MatData.class(class_num + 8).ntr(m2).TS-MatData.class(class_num + 8).ntr(m2).Cue_onT;
-                        allTS1 = [allTS1 TS];
+                        nTS = length(find(TS>=epoch_start & TS< epoch_end));
+                        nTS1 = [nTS nTS1];
                         m_counter1 = m_counter1 + 1;
                     catch
                     end
@@ -67,21 +85,32 @@ if ~isempty(MatData) && class_num <= length(MatData.class)
                     try
                         TS=[];
                         TS = MatData.class(class_num + 8).ntr(m2).TS-MatData.class(class_num + 8).ntr(m2).Cue_onT;
-                        allTS2 = [allTS2 TS];
+                        nTS = length(find(TS>=epoch_start & TS< epoch_end));
+                        nTS2 = [nTS nTS2];
                         m_counter2 = m_counter2 + 1;
                     catch
                     end
                 end
-                if  MatData.class(class_num + 8).ntr(m2).Saccade_onT - MatData.class(class_num + 8).ntr(m2).Cue_onT >= Threshold2
+                if  MatData.class(class_num + 8).ntr(m2).Saccade_onT - MatData.class(class_num + 8).ntr(m2).Cue_onT >= Threshold2 && MatData.class(class_num + 8).ntr(m2).Saccade_onT - MatData.class(class_num + 8).ntr(m2).Cue_onT < Threshold3
                     try
                         TS=[];
                         TS = MatData.class(class_num + 8).ntr(m2).TS-MatData.class(class_num + 8).ntr(m2).Cue_onT;
-                        allTS3 = [allTS3 TS];
+                        nTS = length(find(TS>=epoch_start & TS< epoch_end));
+                        nTS3 = [nTS nTS3];
                         m_counter3 = m_counter3 + 1;
                     catch
                     end
                 end
-                
+                if MatData.class(class_num + 8).ntr(m2).Saccade_onT - MatData.class(class_num + 8).ntr(m2).Cue_onT >= Threshold3
+                    try
+                        TS=[];
+                        TS = MatData.class(class_num + 8).ntr(m2).TS-MatData.class(class_num + 8).ntr(m2).Cue_onT;
+                        nTS = length(find(TS>=epoch_start & TS< epoch_end));
+                        nTS4 = [nTS nTS4];
+                        m_counter4 = m_counter4 + 1;
+                    catch
+                    end
+                end
             end
         end
         if class_num + 16 <= length(MatData.class)
@@ -91,7 +120,8 @@ if ~isempty(MatData) && class_num <= length(MatData.class)
                         try
                             TS=[];
                             TS = MatData.class(class_num + 16).ntr(m3).TS-MatData.class(class_num + 16).ntr(m3).Cue_onT;
-                            allTS1 = [allTS1 TS];
+                            nTS = length(find(TS>=epoch_start & TS< epoch_end));
+                            nTS1 = [nTS nTS1];
                             m_counter1 = m_counter1 + 1;
                         catch
                         end
@@ -100,21 +130,31 @@ if ~isempty(MatData) && class_num <= length(MatData.class)
                         try
                             TS=[];
                             TS = MatData.class(class_num + 16).ntr(m3).TS-MatData.class(class_num + 16).ntr(m3).Cue_onT;
-                            allTS2 = [allTS2 TS];
+                            nTS = length(find(TS>=epoch_start & TS< epoch_end));
+                            nTS2 = [nTS nTS2];
                             m_counter2 = m_counter2 + 1;
                         catch
                         end
                     end
-                    if  MatData.class(class_num + 16).ntr(m3).Saccade_onT - MatData.class(class_num + 16).ntr(m3).Cue_onT >= Threshold2
+                    if  MatData.class(class_num + 16).ntr(m3).Saccade_onT - MatData.class(class_num + 16).ntr(m3).Cue_onT >= Threshold2 && MatData.class(class_num + 16).ntr(m3).Saccade_onT - MatData.class(class_num + 16).ntr(m3).Cue_onT < Threshold3
                         try
                             TS=[];
                             TS = MatData.class(class_num + 16).ntr(m3).TS-MatData.class(class_num + 16).ntr(m3).Cue_onT;
-                            allTS3 = [allTS3 TS];
+                            nTS = length(find(TS>=epoch_start & TS< epoch_end));
+                            nTS3 = [nTS nTS3];
                             m_counter3 = m_counter3 + 1;
                         catch
                         end
                     end
-                    
+                    if MatData.class(class_num + 16).ntr(m3).Saccade_onT - MatData.class(class_num + 16).ntr(m3).Cue_onT >= Threshold3
+                        try
+                            TS=[];
+                            nTS = length(find(TS>=epoch_start & TS< epoch_end));
+                            nTS4 = [nTS nTS4];
+                            m_counter4 = m_counter4 + 1;
+                        catch
+                        end
+                    end
                 end
             end
         end
@@ -122,22 +162,14 @@ if ~isempty(MatData) && class_num <= length(MatData.class)
     ntrs1 = m_counter1;
     ntrs2 = m_counter2;
     ntrs3 = m_counter3;
+    ntrs4 = m_counter4;
 else
     disp('Empty MatData File!!!');
 end
 
-psth_temp1 =histc(allTS1,bin_edges)/(bin_width*ntrs1);
-if isempty(psth_temp1)
-    psth_temp1 = zeros(1,47);
-end
-psth_temp2 =histc(allTS2,bin_edges)/(bin_width*ntrs2);
-if isempty(psth_temp2)
-    psth_temp2 = zeros(1,47);
-end
-psth_temp3 =histc(allTS3,bin_edges)/(bin_width*ntrs3);
-if isempty(psth_temp3)
-    psth_temp3 = zeros(1,47);
-end
-ntrs_temp = [ntrs1 ntrs2 ntrs3];
-
+FR_temp1 = nTS1/(epoch_end-epoch_start);
+FR_temp2 = nTS2/(epoch_end-epoch_start);
+FR_temp3 = nTS3/(epoch_end-epoch_start);
+FR_temp4 = nTS4/(epoch_end-epoch_start);
+ntrs_temp = [ntrs1 ntrs2 ntrs3 ntrs4];
 end

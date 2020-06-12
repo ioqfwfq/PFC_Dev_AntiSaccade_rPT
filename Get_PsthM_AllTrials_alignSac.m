@@ -1,9 +1,11 @@
 function [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac(filename,class_num)
-%09-Oct-2019, J Zhu
+% 4-Feb-2020, J Zhu
+% The analysis was performed in a time-resolved fashion, comparing
+% responses in a 100-ms-long moving window computed in 10-ms steps.
 load(filename)
-bin_width = 0.05;  % 50 milliseconds bin
-bin_edges=-.8:bin_width:1.5;
-bins = bin_edges+0.5*bin_width;
+bin_width = 0.1;  % 100 milliseconds bin
+bin_step = 0.01; %10 ms steps
+bin_edges=-.8:bin_step:1.5;
 
 allTS = [];
 m_counter = 0;
@@ -52,7 +54,7 @@ else
 end
 psth_temp =histc(allTS,bin_edges)/(bin_width*ntrs);
 if isempty(psth_temp)
-    psth_temp = zeros(1,47);
+    psth_temp1 = zeros(1,length(bins));
 end
 ntrs_temp = ntrs;
 end

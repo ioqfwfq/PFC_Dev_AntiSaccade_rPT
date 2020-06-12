@@ -1,8 +1,8 @@
-function Neuron_Data_PSTH_AntiSaccade_alltrials_alignsac
+function Neuron_Data_PSTH_AntiSaccade_overlaptrials_alignsac
 % For AntiSaccade task
-% Plot result from all trials pooled together
-% Aligned on saccade
-% 30-Mar-2020, J Zhu
+% Plot result from overlap trials
+% Aligned on saccade onset
+% Apr-2020, J Zhu
 
 clear all
 [Neurons_num Neurons_txt1] = xlsread('database.xlsx','adultPFC');
@@ -20,10 +20,10 @@ for n = 1:length(Neurons)
 %     Profilename = [Neurons{n,1}(1:6),'_1_',num2str(Neurons{n,2})];
 %     Errfilename = [Neurons1{n,1}(1:6),'_2_',num2str(Neurons1{n,2}),'_erriscuesac'];
     try
-        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac(Antifilename,best_target(n));
+        [psth_temp, ntrs_temp] = Get_PsthM_overlapTrials_alignSac(Antifilename,best_target(n));
         psth1(n,:) = psth_temp;
         ntrs1(n) = ntrs_temp;
-        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac(Antifilename,Opp_Sac(n));
+        [psth_temp, ntrs_temp] = Get_PsthM_overlapTrials_alignSac(Antifilename,Opp_Sac(n));
         psth2(n,:) = psth_temp;
         ntrs2(n) = ntrs_temp;
     catch
@@ -38,8 +38,8 @@ ntrs2=sum(ntrs2);
 
 definepsthmax=50;
 
-% fig=openfig('figure2');
-figure
+openfig('figure2')
+% figure
 set( gcf, 'Color', 'White', 'Unit', 'Normalized', ...
     'Position', [0.1,0.1,0.8,0.8] );
 bin_width = 0.1;  % 100 milliseconds bin
@@ -51,29 +51,24 @@ try
     psth1mean = sum(psth1)/nn1;
     psth2mean = sum(psth2)/nn2;
     for i = 1:221
-        psth1meanall(i) = sum(psth1mean([i:i+10]));
-        psth2meanall(i) = sum(psth2mean([i:i+10]));
+        psth1meanall(i) = mean(psth1mean([i:i+9]));
+        psth2meanall(i) = mean(psth2mean([i:i+9]));
     end
 catch
 end
 try
-    plot(bins,psth1meanall,'c','LineWidth',3);
-    plot(bins,psth2meanall,'m','LineWidth',3);
+    plot(bins,psth1meanall,'g','LineWidth',3);
+%     plot(bins,psth2meanall,'m','LineWidth',3);
 catch
 end
 
-line([0 0], [0 50],'color','k')
-axis([-0.5 1.5 0 definepsthmax+0.2])
-xlim([-0.5 0.5])
-xlabel('Time s')
-ylabel('Firing Rate spikes/s')
-gtext({[num2str(nn1) ' neurons ' num2str(ntrs1) ' trials']},'color','r', 'FontWeight', 'Bold')
-% gtext({[num2str(nn2) ' neurons ' num2str(ntrs2) ' trials']},'color','b', 'FontWeight', 'Bold')
-
-% axes( 'Position', [0, 0.95, 1, 0.05] );
-% set( gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None' );
-% text( 0.5, 0, 'PFC motor neurons Align saccade Best target location', 'FontSize', 12', 'FontWeight', 'Bold', ...
-%     'HorizontalAlignment', 'Center', 'VerticalAlignment', 'middle' )
+% line([0 0], [0 50],'color','k')
+% axis([-0.5 1.5 0 definepsthmax+0.2])
+% xlim([-0.5 0.5])
+% xlabel('Time s')
+% ylabel('Firing Rate spikes/s')
+gtext({[num2str(nn1) ' neurons ' num2str(ntrs1) ' trials']},'color','g', 'FontWeight', 'Bold')
+% gtext({[num2str(nn2) ' neurons ' num2str(ntrs2) ' trials']},'color','m', 'FontWeight', 'Bold')
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
