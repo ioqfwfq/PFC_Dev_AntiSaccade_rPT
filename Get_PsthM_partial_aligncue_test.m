@@ -1,12 +1,12 @@
-function [psth_temp ntrs] = Get_PsthM_partial_aligncue(filename,class_num,lo,hi) 
+function [psth_temp ntrs] = Get_PsthM_partial_aligncue_test(filename,class_num,lo,hi) 
 % The analysis was performed in a time-resolved fashion, comparing
-% responses in a 10-ms-long moving window computed in 10-ms steps.
-% 4-Feb-2020, J Zhu
+% responses in a 80-ms-long moving window computed in 80-ms steps.
+% 27-May-2020, J Zhu
 load(filename)
-bin_width = 0.01;  % 10 milliseconds bin
-bin_step = 0.01; %10 ms steps
-bin_edges=-.8:bin_step:1.5;
-bins = bin_edges+0.5*bin_width; %231 in total
+bin_width = 0.08;  % 80 milliseconds bin
+bin_step = 0.08; %80 ms steps
+bin_edges=-.04:bin_step:1.5;
+bins = bin_edges+0.5*bin_width;
 
 bin_edges_Pro=-1:bin_width:3;
 bins_Pro = bin_edges_Pro+0.5*bin_width;

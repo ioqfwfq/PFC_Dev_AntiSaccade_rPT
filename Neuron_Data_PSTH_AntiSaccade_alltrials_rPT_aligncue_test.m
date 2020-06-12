@@ -1,13 +1,15 @@
-function Neuron_Data_PSTH_AntiSaccade_alltrials_rPT_aligncue
+function Neuron_Data_PSTH_AntiSaccade_alltrials_rPT_aligncue_test
 % For AntiSaccade task
 % Plot result from all trials pooled together (4 groups of rPT, 1 condition for each group)
 % Align on cue
 % 28-Apr-2020, J Zhu
 
 clear all
-[Neurons_num Neurons_txt] = xlsread('database.xlsx','allPFC');
+[Neurons_num Neurons_txt] = xlsread('test_VN.xlsx','all');
 warning off MATLAB:divideByZero
 Neurons = [Neurons_txt(:,1) num2cell(Neurons_num(:,1))];
+% load('79sameneurons')
+% Neurons = [neuron(:,1) neuron(:,2)];
 
 Best_Cue = Get_Maxes(Neurons);
 opp_index = [5 6 7 8 1 2 3 4 9];
@@ -26,7 +28,7 @@ for n = 1:length(Neurons)
     Profilename = [Neurons{n,1}(1:6),'_1_',num2str(Neurons{n,2})];
     Errfilename = [Neurons{n,1}(1:6),'_2_',num2str(Neurons{n,2}),'_erriscuesac'];
     try
-        [psth_temp1, psth_temp2, psth_temp3, psth_temp4, ntrs_temp] = Get_PsthM_AllTrials_4rawProcessingTime_alignCue(Antifilename,Best_Cue(n));
+        [psth_temp1, psth_temp2, psth_temp3, psth_temp4, ntrs_temp] = Get_PsthM_AllTrials_4rawProcessingTime_alignCue_test(Antifilename,Best_Cue(n));
         psth1(n,:) = psth_temp1;
         psth3(n,:) = psth_temp2;
         psth5(n,:) = psth_temp3;
@@ -36,7 +38,7 @@ for n = 1:length(Neurons)
         disp(['error processing neuron  ', Antifilename  '  Dir1=' num2str(Best_Cue(n))])
     end
     try
-        [psth_temp1, psth_temp2, psth_temp3, psth_temp4, ntrs_temp] = Get_PsthM_AllTrials_4rawProcessingTime_alignCue(Antifilename,Opp_Cue(n));
+        [psth_temp1, psth_temp2, psth_temp3, psth_temp4, ntrs_temp] = Get_PsthM_AllTrials_4rawProcessingTime_alignCue_test(Antifilename,Opp_Cue(n));
         psth2(n,:) = psth_temp1;
         psth4(n,:) = psth_temp2;
         psth6(n,:) = psth_temp3;
@@ -48,16 +50,16 @@ end
 
 nn=sum(ntrs~=0);
 ntrs=sum(ntrs);
-definepsthmax=70;
+definepsthmax=50;
 
 % fig=openfig('figure2');
 figure
 set( gcf, 'Color', 'White', 'Unit', 'Normalized', ...
     'Position', [0.2,0.2,0.5,0.5] );
-subplot(4,1,1)
-bin_width = 0.01;  % 10 milliseconds bin
-bin_step = 0.01;
-bin_edges=-.8:bin_step:1.5;
+subplot(2,2,1)
+bin_width = 0.08;  % 10 milliseconds bin
+bin_step = 0.08;
+bin_edges=-.04:bin_step:1.5;
 bins = bin_edges+0.5*bin_width; % 231 bins
 
 hold on
@@ -84,9 +86,9 @@ title('0-0.075s')
 gtext({[num2str(nn(1)) ' neurons ' num2str(ntrs(1)) ' trials']},'color','b', 'FontWeight', 'Bold')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-subplot(4,1,2)
-bin_width = 0.01;  % 10 milliseconds bin
-bin_edges=-.8:bin_width:1.5;
+subplot(2,2,2)
+bin_width = 0.08;  % 10 milliseconds bin
+bin_edges=-.04:bin_width:1.5;
 bins = bin_edges+0.5*bin_width;
 hold on
 patch([0 0.1 0.1 0], [0 0 definepsthmax definepsthmax], [0.9 0.9 0.9], 'EdgeColor', 'none')
@@ -112,9 +114,9 @@ title('0.075-0.120s')
 gtext({[num2str(nn(2)) ' neurons ' num2str(ntrs(2)) ' trials']},'color','b', 'FontWeight', 'Bold')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-subplot(4,1,3)
-bin_width = 0.01;  % 10 milliseconds bin
-bin_edges=-.8:bin_width:1.5;
+subplot(2,2,3)
+bin_width = 0.08;  % 10 milliseconds bin
+bin_edges=-.04:bin_width:1.5;
 bins = bin_edges+0.5*bin_width;
 hold on
 patch([0 0.1 0.1 0], [0 0 definepsthmax definepsthmax], [0.9 0.9 0.9], 'EdgeColor', 'none')
@@ -140,9 +142,9 @@ title('0.120-0.150s')
 gtext({[num2str(nn(3)) ' neurons ' num2str(ntrs(3)) ' trials']},'color','b', 'FontWeight', 'Bold')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-subplot(4,1,4)
-bin_width = 0.01;  % 10 milliseconds bin
-bin_edges=-.8:bin_width:1.5;
+subplot(2,2,4)
+bin_width = 0.08;  % 10 milliseconds bin
+bin_edges=-.04:bin_width:1.5;
 bins = bin_edges+0.5*bin_width;
 hold on
 patch([0 0.1 0.1 0], [0 0 definepsthmax definepsthmax], [0.9 0.9 0.9], 'EdgeColor', 'none')

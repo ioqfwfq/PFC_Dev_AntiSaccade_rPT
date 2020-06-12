@@ -1,4 +1,4 @@
-function Neuron_Data_PSTH_AntiSaccade_alltrials_alignsac
+function Neuron_Data_PSTH_AntiSaccade_alltrials_alignsac_test
 % For AntiSaccade task
 % Plot result from all trials pooled together
 % Aligned on saccade
@@ -20,10 +20,10 @@ for n = 1:length(Neurons)
 %     Profilename = [Neurons{n,1}(1:6),'_1_',num2str(Neurons{n,2})];
 %     Errfilename = [Neurons1{n,1}(1:6),'_2_',num2str(Neurons1{n,2}),'_erriscuesac'];
     try
-        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac(Antifilename,best_target(n));
+        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac_test(Antifilename,best_target(n));
         psth1(n,:) = psth_temp;
         ntrs1(n) = ntrs_temp;
-        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac(Antifilename,Opp_Sac(n));
+        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac_test(Antifilename,Opp_Sac(n));
         psth2(n,:) = psth_temp;
         ntrs2(n) = ntrs_temp;
     catch

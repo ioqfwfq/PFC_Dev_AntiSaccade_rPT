@@ -1,13 +1,13 @@
-function Neuron_Data_PSTH_AntiSaccade_alltrials_alignsac
-% For AntiSaccade task
+function Neuron_Data_PSTH_ODR_alltrials_alignsac
+% For ODR task
 % Plot result from all trials pooled together
 % Aligned on saccade
-% 30-Mar-2020, J Zhu
+% 30-Apr-2020, J Zhu
 
 clear all
-[Neurons_num, Neurons_txt1] = xlsread('database.xlsx','youngPFC');
+[Neurons_num, Neurons_txt] = xlsread('test_MN.xlsx','all');
 warning off MATLAB:divideByZero
-Neurons = [Neurons_txt1(:,1) num2cell(Neurons_num(:,1))];
+Neurons = [Neurons_txt(:,1) num2cell(Neurons_num(:,1))];
 
 Opp_Sac = Get_Maxes_sac(Neurons);
 opp_index = [5 6 7 8 1 2 3 4 9];
@@ -16,18 +16,18 @@ for n = 1:length(Opp_Sac)
 end
 
 for n = 1:length(Neurons)
-    Antifilename = [Neurons{n,1}(1:6),'_2_',num2str(Neurons{n,2})];
-%     Profilename = [Neurons{n,1}(1:6),'_1_',num2str(Neurons{n,2})];
+%     Antifilename = [Neurons{n,1}(1:6),'_2_',num2str(Neurons{n,2})];
+    Profilename = [Neurons{n,1}(1:6),'_1_',num2str(Neurons{n,2})];
 %     Errfilename = [Neurons1{n,1}(1:6),'_2_',num2str(Neurons1{n,2}),'_erriscuesac'];
     try
-        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac(Antifilename,best_target(n));
+        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac(Profilename,best_target(n));
         psth1(n,:) = psth_temp;
         ntrs1(n) = ntrs_temp;
-        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac(Antifilename,Opp_Sac(n));
+        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac(Profilename,Opp_Sac(n));
         psth2(n,:) = psth_temp;
         ntrs2(n) = ntrs_temp;
     catch
-        disp(['error processing neuron  ', Antifilename  '  Dir1=' num2str(best_target(n))])
+        disp(['error processing neuron  ', Profilename  '  Dir1=' num2str(best_target(n))])
     end
 end
 
@@ -42,7 +42,7 @@ definepsthmax=50;
 figure
 set( gcf, 'Color', 'White', 'Unit', 'Normalized', ...
     'Position', [0.1,0.1,0.8,0.8] );
-bin_width = 0.01;  % 10 milliseconds bin
+bin_width = 0.1;  % 100 milliseconds bin
 bin_step = 0.01; %10 ms steps
 bin_edges=-.8:bin_step:1.5;
 bins = bin_edges+0.5*bin_width; %231 in total
@@ -60,10 +60,16 @@ end
 
 line([0 0], [0 50],'color','k')
 axis([-0.5 1.5 0 definepsthmax+0.2])
-xlim([-0.5 0.5])
+xlim([-0.5 1.5])
 xlabel('Time s')
 ylabel('Firing Rate spikes/s')
 gtext({[num2str(nn1) ' neurons ' num2str(ntrs1) ' trials']},'color','r', 'FontWeight', 'Bold')
+% gtext({[num2str(nn2) ' neurons ' num2str(ntrs2) ' trials']},'color','b', 'FontWeight', 'Bold')
+
+% axes( 'Position', [0, 0.95, 1, 0.05] );
+% set( gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None' );
+% text( 0.5, 0, 'PFC motor neurons Align saccade Best target location', 'FontSize', 12', 'FontWeight', 'Bold', ...
+%     'HorizontalAlignment', 'Center', 'VerticalAlignment', 'middle' )
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

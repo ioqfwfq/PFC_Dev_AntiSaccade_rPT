@@ -1,33 +1,34 @@
-function [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac(filename,class_num)
-% 29-Apr-2020, J Zhu
+function [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue_test(filename,class_num)
+% 27-May-2020, J Zhu
 % The analysis was performed in a time-resolved fashion, comparing
-% responses in a 160-ms-long moving window computed in 160-ms steps.
+% responses in a *80-ms-long moving window* computed in *80-ms steps*.
 load(filename)
-bin_width = 0.16;  % 160 milliseconds bin
-bin_step = 0.16; %160 ms steps
-bin_edges=-.2:bin_step:1.5;
+bin_width = 0.16;  % 10 milliseconds bin
+bin_step = 0.16; %10 ms steps
+bin_edges=0.04:bin_step:1.5;
+bins = bin_edges+0.5*bin_width;
 
 allTS = [];
 m_counter = 0;
 
 if ~isempty(MatData) && class_num <= length(MatData.class)
     for m1 = 1:length(MatData.class(class_num).ntr)
-        if ~isempty(MatData.class(class_num).ntr(m1).Saccade_onT)
+%         if ~isempty(MatData.class(class_num).ntr(m1).Saccade_onT)
             try
                 TS=[];
-                TS = MatData.class(class_num).ntr(m1).TS-MatData.class(class_num).ntr(m1).Saccade_onT;
+                TS = MatData.class(class_num).ntr(m1).TS-MatData.class(class_num).ntr(m1).Cue_onT;
                 allTS = [allTS TS];
                 m_counter = m_counter + 1;
             catch
             end
-        end
+%         end
     end
     if class_num + 8 <= length(MatData.class)
         for m2 = 1:length(MatData.class(class_num + 8).ntr)
             if ~isempty(MatData.class(class_num + 8).ntr(m2).Saccade_onT)
                 try
                     TS=[];
-                    TS = MatData.class(class_num + 8).ntr(m2).TS-MatData.class(class_num + 8).ntr(m2).Saccade_onT;
+                    TS = MatData.class(class_num + 8).ntr(m2).TS-MatData.class(class_num + 8).ntr(m2).Cue_onT;
                     allTS = [allTS TS];
                     m_counter = m_counter + 1;
                 catch
@@ -39,7 +40,7 @@ if ~isempty(MatData) && class_num <= length(MatData.class)
                 if ~isempty(MatData.class(class_num + 16).ntr(m3).Saccade_onT)
                     try
                         TS=[];
-                        TS = MatData.class(class_num + 16).ntr(m3).TS-MatData.class(class_num + 16).ntr(m3).Saccade_onT;
+                        TS = MatData.class(class_num + 16).ntr(m3).TS-MatData.class(class_num + 16).ntr(m3).Cue_onT;
                         allTS = [allTS TS];
                         m_counter = m_counter + 1;
                     catch

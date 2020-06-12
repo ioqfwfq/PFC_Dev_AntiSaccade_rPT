@@ -1,14 +1,13 @@
-function [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignSac(filename,class_num)
-% 29-Apr-2020, J Zhu
-% The analysis was performed in a time-resolved fashion, comparing
-% responses in a 160-ms-long moving window computed in 160-ms steps.
+function [FR_temp1, ntrs_temp] = Get_FRbyneuron_AllTrials_alignSac(filename,class_num)
+%21-May-2020, J Zhu
+%return the mean firing rate of a certain epoch of each neuron
 load(filename)
-bin_width = 0.16;  % 160 milliseconds bin
-bin_step = 0.16; %160 ms steps
-bin_edges=-.2:bin_step:1.5;
 
-allTS = [];
-m_counter = 0;
+nTS1 = [];
+m_counter1 = 0;
+
+epoch_start = -0.15;
+epoch_end = -0.04; % the certain time window
 
 if ~isempty(MatData) && class_num <= length(MatData.class)
     for m1 = 1:length(MatData.class(class_num).ntr)
@@ -16,8 +15,9 @@ if ~isempty(MatData) && class_num <= length(MatData.class)
             try
                 TS=[];
                 TS = MatData.class(class_num).ntr(m1).TS-MatData.class(class_num).ntr(m1).Saccade_onT;
-                allTS = [allTS TS];
-                m_counter = m_counter + 1;
+                nTS = length(find(TS>=epoch_start & TS< epoch_end));
+                nTS1 = [nTS nTS1];
+                m_counter1 = m_counter1 + 1;
             catch
             end
         end
@@ -28,8 +28,9 @@ if ~isempty(MatData) && class_num <= length(MatData.class)
                 try
                     TS=[];
                     TS = MatData.class(class_num + 8).ntr(m2).TS-MatData.class(class_num + 8).ntr(m2).Saccade_onT;
-                    allTS = [allTS TS];
-                    m_counter = m_counter + 1;
+                    nTS = length(find(TS>=epoch_start & TS< epoch_end));
+                    nTS1 = [nTS nTS1];
+                    m_counter1 = m_counter1 + 1;
                 catch
                 end
             end
@@ -40,21 +41,22 @@ if ~isempty(MatData) && class_num <= length(MatData.class)
                     try
                         TS=[];
                         TS = MatData.class(class_num + 16).ntr(m3).TS-MatData.class(class_num + 16).ntr(m3).Saccade_onT;
-                        allTS = [allTS TS];
-                        m_counter = m_counter + 1;
+                        nTS = length(find(TS>=epoch_start & TS< epoch_end));
+                        nTS1 = [nTS nTS1];
+                        m_counter1 = m_counter1 + 1;
                     catch
                     end
                 end
             end
         end
     end
-    ntrs = m_counter;
+    ntrs1 = m_counter1;
 else
     disp('Empty MatData File!!!');
 end
-psth_temp =histc(allTS,bin_edges)/(bin_width*ntrs);
-if isempty(psth_temp)
-    psth_temp1 = zeros(1,length(bins));
-end
-ntrs_temp = ntrs;
+
+ntrs_temp = ntrs1;
+
+FR_temp1 = mean(nTS1/(epoch_end-epoch_start));
+
 end

@@ -2,12 +2,14 @@ function y = Neuron_Data_FRbyneuron_AntiSaccade_alltrials_4rPT_aligncue
 % For AntiSaccade task
 % calculate the firing rate of certain epoch of certain trails
 % Align cue, group by neuron, calculating mean rate of neurons then ANOVA
-% 10-Jan-2019, J Zhu
+% 10-Jan-2020, J Zhu
 
 clear all
-[Neurons_num Neurons_txt] = xlsread('database.xlsx','allPFC');
-warning off MATLAB:divideByZero
-Neurons = [Neurons_txt(:,1) num2cell(Neurons_num(:,1))];
+% [Neurons_num Neurons_txt] = xlsread('database.xlsx','allPFC');
+% warning off MATLAB:divideByZero
+% Neurons = [Neurons_txt(:,1) num2cell(Neurons_num(:,1))];
+load('79sameneurons')
+Neurons = [neuron(:,1) neuron(:,2)];
 
 Best_Cue = Get_Maxes(Neurons);
 opp_index = [5 6 7 8 1 2 3 4 9];
@@ -36,15 +38,15 @@ for n = 1:length(Neurons)
     catch
         disp(['error processing neuron  ', Antifilename  '  Dir1=' num2str(Best_Cue(n))])
     end
-    try
-        [FR_temp1, FR_temp2, FR_temp3, FR_temp4, ntrs_temp] = Get_FRbyneuron_AllTrials_4rawProcessingTime_alignCue(Antifilename,Opp_Cue(n));
-        fr2 = [fr2 FR_temp1];
-        fr4 = [fr4 FR_temp2];
-        fr6 = [fr6 FR_temp3];
-        fr8 = [fr8 FR_temp4];
-    catch
-        disp(['error processing neuron  ', Antifilename  '  Dir2=' num2str(Opp_Cue(n))])
-    end
+%     try
+%         [FR_temp1, FR_temp2, FR_temp3, FR_temp4, ntrs_temp] = Get_FRbyneuron_AllTrials_4rawProcessingTime_alignCue(Antifilename,Opp_Cue(n));
+%         fr2 = [fr2 FR_temp1];
+%         fr4 = [fr4 FR_temp2];
+%         fr6 = [fr6 FR_temp3];
+%         fr8 = [fr8 FR_temp4];
+%     catch
+%         disp(['error processing neuron  ', Antifilename  '  Dir2=' num2str(Opp_Cue(n))])
+%     end
 end
 
 nn=sum(ntrs~=0);
@@ -54,7 +56,7 @@ y(:,1)=fr1;
 y(:,2)=fr3;
 y(:,3)=fr5;
 y(:,4)=fr7;
-[p,tbl,stats] = anova1(y);
+% [p,tbl,stats] = anova1(y);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function Directions = Get_Dir(Neurons)

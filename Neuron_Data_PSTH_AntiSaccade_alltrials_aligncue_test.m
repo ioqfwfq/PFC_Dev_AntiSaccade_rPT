@@ -2,12 +2,14 @@ function Neuron_Data_PSTH_AntiSaccade_alltrials_aligncue
 % For AntiSaccade task
 % Plot result from all trials pooled together
 % Aligned on cue
-% 28-Apr-2020, J Zhu
+% 27-May-2020, J Zhu
 
 clear all
-[Neurons_num Neurons_txt] = xlsread('testErr.xlsx','MN');
-warning off MATLAB:divideByZero
-Neurons = [Neurons_txt(:,1) num2cell(Neurons_num(:,1))];
+% [Neurons_num Neurons_txt] = xlsread('testErr.xlsx','MN');
+% warning off MATLAB:divideByZero
+% Neurons = [Neurons_txt(:,1) num2cell(Neurons_num(:,1))];
+load('60samevisualneurons')
+Neurons = [neuron(:,1) neuron(:,2)];
 
 Opp_Sac = Get_Maxes_sac(Neurons);
 opp_index = [5 6 7 8 1 2 3 4 9];
@@ -16,38 +18,38 @@ for n = 1:length(Opp_Sac)
 end
 
 for n = 1:length(Neurons)
-%     Antifilename = [Neurons{n,1}(1:6),'_2_',num2str(Neurons{n,2})];
+    Antifilename = [Neurons{n,1}(1:6),'_2_',num2str(Neurons{n,2})];
     %     Profilename = [Neurons{n,1}(1:6),'_1_',num2str(Neurons{n,2})];
         Errfilename = [Neurons{n,1}(1:6),'_2_',num2str(Neurons{n,2}),'_erriscuesac'];
     
-    try
-        [psth_temp, ntrs_temp] = Get_PsthM_partial_aligncue(Errfilename,Opp_Sac(n),0.075,0.150);
-        psth1(n,:) = psth_temp;
-        ntrs1(n) = ntrs_temp;
-    catch
-        disp(['error processing neuron  ', Errfilename  '  Dir1=' num2str(Opp_Sac(n))])
-    end
-    try
-        [psth_temp, ntrs_temp] = Get_PsthM_partial_aligncue(Errfilename,Best_target(n),0.075,0.150);
-        psth2(n,:) = psth_temp;
-        ntrs2(n) = ntrs_temp;
-    catch
-        disp(['error processing neuron  ', Errfilename  '  Dir2=' num2str(Best_target(n))])
-    end
 %     try
-%         [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue(Errfilename,Opp_Sac(n));
+%         [psth_temp, ntrs_temp] = Get_PsthM_partial_aligncue_test(Errfilename,Opp_Sac(n),0.075,0.150);
 %         psth1(n,:) = psth_temp;
 %         ntrs1(n) = ntrs_temp;
 %     catch
 %         disp(['error processing neuron  ', Errfilename  '  Dir1=' num2str(Opp_Sac(n))])
 %     end
 %     try
-%         [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue(Errfilename,Best_target(n));
+%         [psth_temp, ntrs_temp] = Get_PsthM_partial_aligncue_test(Errfilename,Best_target(n),0.075,0.150);
 %         psth2(n,:) = psth_temp;
 %         ntrs2(n) = ntrs_temp;
 %     catch
 %         disp(['error processing neuron  ', Errfilename  '  Dir2=' num2str(Best_target(n))])
 %     end
+    try
+        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue_test(Antifilename,Best_target(n));
+        psth1(n,:) = psth_temp;
+        ntrs1(n) = ntrs_temp;
+    catch
+        disp(['error processing neuron  ', Antifilename  '  Dir1=' num2str(Best_target(n))])
+    end
+    try
+        [psth_temp, ntrs_temp] = Get_PsthM_AllTrials_alignCue_test(Errfilename,Best_target(n));
+        psth2(n,:) = psth_temp;
+        ntrs2(n) = ntrs_temp;
+    catch
+        disp(['error processing neuron  ', Errfilename  '  Dir2=' num2str(Best_target(n))])
+    end
     
 end
 
