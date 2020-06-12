@@ -4,14 +4,14 @@
 % 01-Oct-2019, J Zhu
 
 clear all
-[Neurons_num Neurons_txt] = xlsread('testErr.xlsx','young');
+[Neurons_num Neurons_txt] = xlsread('test_MN.xlsx','all');
 warning off MATLAB:divideByZero
 Neurons = [Neurons_txt(:,1) num2cell(Neurons_num(:,1))];
 
-Best_target = Get_Maxes_sac(Neurons);
+Opp_Sac = Get_Maxes_sac(Neurons);
 opp_index = [5 6 7 8 1 2 3 4 9];
-for n = 1:length(Best_target)
-    Opp_Cue(n) = opp_index(Best_target(n));
+for n = 1:length(Opp_Sac)
+    Best_target(n) = opp_index(Opp_Sac(n));
 end
 
 for n = 1:length(Neurons)
@@ -26,25 +26,25 @@ for n = 1:length(Neurons)
     catch
         disp(['error processing neuron  ', Errfilename  '  Dir1=' num2str(Best_target(n))])
     end
-    try
-        [psth_temp1, psth_temp2, psth_temp3, psth_temp4, ntrs_temp] = Get_PsthM_AllTrials_rawProcessingTime_alignSac(Errfilename,Opp_Cue(n));
-        psth2(n,:) = psth_temp1;
-        psth4(n,:) = psth_temp2;
-        psth6(n,:) = psth_temp3;
-        psth8(n,:) = psth_temp4;
-    catch
-        disp(['error processing neuron  ', Errfilename  '  Dir2=' num2str(Opp_Cue(n))])
-    end
+%     try
+%         [psth_temp1, psth_temp2, psth_temp3, psth_temp4, ntrs_temp] = Get_PsthM_AllTrials_rawProcessingTime_alignSac(Errfilename,Opp_Sac(n));
+%         psth2(n,:) = psth_temp1;
+%         psth4(n,:) = psth_temp2;
+%         psth6(n,:) = psth_temp3;
+%         psth8(n,:) = psth_temp4;
+%     catch
+%         disp(['error processing neuron  ', Errfilename  '  Dir2=' num2str(Opp_Sac(n))])
+%     end
 end
 
 nn=sum(ntrs~=0);
 ntrs=sum(ntrs);
 definepsthmax=50;
 
-% fig=openfig('figure2');
-figure
-set( gcf, 'Color', 'White', 'Unit', 'Normalized', ...
-    'Position', [0.1,0.1,0.8,0.8] ) ;
+fig=openfig('figure2');
+% figure
+% set( gcf, 'Color', 'White', 'Unit', 'Normalized', ...
+%     'Position', [0.1,0.1,0.8,0.8] ) ;
 subplot(2,2,1)
 bin_width = 0.05;  % 50 milliseconds bin
 bin_edges=-.8:bin_width:1.5;
@@ -59,17 +59,17 @@ try
     plot(bins,psth1mean,'r','LineWidth',3);
 catch
 end
-try
-    plot(bins,psth2mean,'b','LineWidth',3);
-catch
-end
-line([0 0], [0 50],'color','k')
-axis([-0.5 1.5 0 definepsthmax+0.2])
-xlim([-0.5 0.5])
-xlabel('Time s')
-ylabel('Firing Rate spikes/s')
-title('0-0.075s')
-gtext({[num2str(nn(1)) ' neurons ' num2str(ntrs(1)) ' trials']},'color','k', 'FontWeight', 'Bold')
+% try
+%     plot(bins,psth2mean,'b','LineWidth',3);
+% catch
+% end
+% line([0 0], [0 50],'color','k')
+% axis([-0.5 1.5 0 definepsthmax+0.2])
+% xlim([-0.5 0.5])
+% xlabel('Time s')
+% ylabel('Firing Rate spikes/s')
+% title('0-0.075s')
+gtext({[num2str(nn(1)) ' neurons ' num2str(ntrs(1)) ' trials']},'color','r', 'FontWeight', 'Bold')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 subplot(2,2,2)
@@ -87,17 +87,17 @@ try
     plot(bins,psth3mean,'r','LineWidth',3);
 catch
 end
-try
-    plot(bins,psth4mean,'b','LineWidth',3);
-catch
-end
-line([0 0], [0 50],'color','k')
-axis([-0.5 1.5 0 definepsthmax+0.2])
-xlim([-0.5 0.5])
-xlabel('Time s')
-ylabel('Firing Rate spikes/s')
-title('0.075-0.120s')
-gtext({[num2str(nn(2)) ' neurons ' num2str(ntrs(2)) ' trials']},'color','k', 'FontWeight', 'Bold')
+% try
+%     plot(bins,psth4mean,'b','LineWidth',3);
+% catch
+% end
+% line([0 0], [0 50],'color','k')
+% axis([-0.5 1.5 0 definepsthmax+0.2])
+% xlim([-0.5 0.5])
+% xlabel('Time s')
+% ylabel('Firing Rate spikes/s')
+% title('0.075-0.120s')
+gtext({[num2str(nn(2)) ' neurons ' num2str(ntrs(2)) ' trials']},'color','r', 'FontWeight', 'Bold')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 subplot(2,2,3)
@@ -115,17 +115,17 @@ try
     plot(bins,psth5mean,'r','LineWidth',3);
 catch
 end
-try
-    plot(bins,psth6mean,'b','LineWidth',3);
-catch
-end
-line([0 0], [0 50],'color','k')
-axis([-0.5 1.5 0 definepsthmax+0.2])
-xlim([-0.5 0.5])
-xlabel('Time s')
-ylabel('Firing Rate spikes/s')
-title('0.120-0.150s')
-gtext({[num2str(nn(3)) ' neurons ' num2str(ntrs(3)) ' trials']},'color','k', 'FontWeight', 'Bold')
+% try
+%     plot(bins,psth6mean,'b','LineWidth',3);
+% catch
+% end
+% line([0 0], [0 50],'color','k')
+% axis([-0.5 1.5 0 definepsthmax+0.2])
+% xlim([-0.5 0.5])
+% xlabel('Time s')
+% ylabel('Firing Rate spikes/s')
+% title('0.120-0.150s')
+gtext({[num2str(nn(3)) ' neurons ' num2str(ntrs(3)) ' trials']},'color','r', 'FontWeight', 'Bold')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 subplot(2,2,4)
@@ -143,21 +143,21 @@ try
     plot(bins,psth7mean,'r','LineWidth',3);
 catch
 end
-try
-    plot(bins,psth8mean,'b','LineWidth',3);
-catch
-end
-line([0 0], [0 50],'color','k')
-axis([-0.5 1.5 0 definepsthmax+0.2])
-xlim([-0.5 0.5])
-xlabel('Time s')
-ylabel('Firing Rate spikes/s')
-title('>0.150s')
-gtext({[num2str(nn(4)) ' neurons ' num2str(ntrs(4)) ' trials']},'color','k', 'FontWeight', 'Bold')
+% try
+%     plot(bins,psth8mean,'b','LineWidth',3);
+% catch
+% end
+% line([0 0], [0 50],'color','k')
+% axis([-0.5 1.5 0 definepsthmax+0.2])
+% xlim([-0.5 0.5])
+% xlabel('Time s')
+% ylabel('Firing Rate spikes/s')
+% title('>0.150s')
+gtext({[num2str(nn(4)) ' neurons ' num2str(ntrs(4)) ' trials']},'color','r', 'FontWeight', 'Bold')
 
 axes( 'Position', [0, 0.95, 1, 0.05] ) ;
 set( gca, 'Color', 'None', 'XColor', 'None', 'YColor', 'None' ) ;
-text( 0.5, 0, 'PPC neurons Align Sac Best saccade location/opposite location', 'FontSize', 12', 'FontWeight', 'Bold', ...
+text( 0.5, 0, 'PFC motor neurons Align Sac Best saccade location', 'FontSize', 12', 'FontWeight', 'Bold', ...
     'HorizontalAlignment', 'Center', 'VerticalAlignment', 'middle' )
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
