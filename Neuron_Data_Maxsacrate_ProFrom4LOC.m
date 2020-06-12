@@ -1,5 +1,5 @@
-function max_class = Neuron_Data_Maxcuerate_ProFrom4LOC(Profilename,Antifilename)
-% last edited Aug 21st, 2019, J Zhu
+function max_class = Neuron_Data_Maxsacrate_ProFrom4LOC(Profilename,Antifilename)
+% last edited Aug 21st 2019, J Zhu
 % edited(24-Oct-2011),xzhou 
 try
     load(Antifilename)
